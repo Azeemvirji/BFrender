@@ -39,5 +39,10 @@ class Login extends CI_Controller {
     $this->userauth->logout();
   }
 
+  public function redirect($page)
+  {
+      header("Location: ".$page);
+      exit();
+  }
 }
 ?>

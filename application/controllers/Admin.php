@@ -18,13 +18,16 @@ class Admin extends CI_Controller {
                                 'admin' => true,
                                 'login'=>false);
 	$this->TPL['acl'] = $_SESSION['acl'];
+  $this->TPL['options_dropdown'] = [
+                              'member' => "member",
+                              'admin' => "admin"];
   }
-  
+
   private function display()
   {
-    $query = $this->db-> query("SELECT * FROM userslab6 ORDER BY compid ASC;");
+    $query = $this->db-> query("SELECT * FROM users ORDER BY userId ASC;");
 	$this->TPL['listing'] = $query->result_array();
-	
+
     $this->template->show('admin', $this->TPL);
   }
 
@@ -32,45 +35,48 @@ class Admin extends CI_Controller {
   {
 	$this->display();
   }
-  
+
   public function addUser(){
 	$this->formValidation();
 	if($this->form_validation->run()){
-		$username = $this->input->post("username");
-		$password = $this->input->post("password");
-		$accesslevel = $this->input->post("accesslevel");
-		$query = $this->db->query("INSERT INTO userslab6 VALUES (NULL, '$username', '$password', '$accesslevel', 'N');");
+    $data = array(
+      'uname' => $this->input->post("username"),
+      'password' => $password = $this->input->post("password"),
+      'accessLevel' => $accesslevel = $this->input->post("accesslevel"),
+      'frozen' => 'N'
+    );
+		$query = $this->db->insert('users', $data);
 	}
-	
+
 	$this->display();
   }
-  
+
   public function delete($id)
   {
     $query = $this->db->query("DELETE FROM userslab6 where compid = '$id';");
- 
+
     $this->display();
   }
-  
+
   public function freeze($id)
-  {      
+  {
 	$query = $this->db->query("UPDATE userslab6 " .
 							  "SET frozen = 'Y'" .
 							  " WHERE compid = '$id';");
 
     $this->display();
   }
-  
+
   public function formValidation(){
 	$this->load->library('form_validation');
-	$this->form_validation->set_rules('username', 'Username', 'required|is_unique[userslab6.username]', 
+	$this->form_validation->set_rules('username', 'Username', 'required|is_unique[users.uname]',
 	array(
                 'is_unique'     => 'A user with that username already exists!'
         ));
 	$this->form_validation->set_rules('password', 'Password', 'required');
 	$this->form_validation->set_rules('accesslevel', 'Access level', 'callback_accesslevel_check');
   }
-  
+
   public function accesslevel_check($str)
         {
                 if ($str == 'member' || $str == 'admin')

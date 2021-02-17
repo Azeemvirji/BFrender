@@ -51,7 +51,7 @@ class Userauth  {
       // verify if form's data coresponds to database's data
       if ($this->userIsInDatabase() == false)
       {
-        return 'Invalid username/password!';
+        return "Invalid username/password!";
       }
       else
       {
@@ -171,19 +171,17 @@ class Userauth  {
       // Remember: you can get CodeIgniter instance from within a library with:
       $CI =& get_instance();
       // And then you can access database query method with:
-      //$query = $CI->db->query("SELECT * FROM userslab6 ORDER BY compid ASC;");
-
-	  //$listing = $query->result_array();
-
+      $query = $CI->db->query("SELECT * FROM users ORDER BY userId ASC;");
+	  $listing = $query->result_array();
       // Access database to verify username and password from database table
-	  //foreach($listing as $row){
-		  if ($this->username ==  "friend")
+	  foreach($listing as $row){
 		  {
-			if($this->password == "friend"){
-				//$this->frozen = $row['frozen'];
-				$this->accesslevel = "member";
+        //$this->test = $row['uname'];
+			if($this->password == $row['password']){
+				$this->frozen = $row['frozen'];
+				$this->accesslevel = $row['accessLevel'];
 				return true;
-			//}
+			}
 		  }
 	  }
       return false;

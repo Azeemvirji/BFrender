@@ -8,7 +8,7 @@
           <p> With BFrender, you can make friends from nearby or from around the world</p>
           <? if(!$loggedin) {?>
             <a class="btn btn-first" href = "<?= base_url(); ?>index.php?/Login">Login</a>
-            <a class="btn btn-first" href = "#">Sign Up</a>
+            <a class="btn btn-first" href = "<?= base_url(); ?>index.php?/Register">Sign Up</a>
           <? } ?>
         </div>
 

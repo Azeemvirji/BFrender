@@ -1,3 +1,4 @@
+<div class = "container">
 <h2>Admin</h2>
 <strong><?= validation_errors() ?></strong>
 <h3>User Table</h3>
@@ -15,14 +16,18 @@
 <? foreach($listing as $row){ ?>
  <tr>
  <td><a href="<?= base_url() ?>index.php?/Admin/delete/<?= $row['compid'] ?>">D</a></td>
- <td><a href="<?= base_url() ?>index.php?/Admin/freeze/<?= $row['compid'] ?>">F</a></td>
- <td><?= $row['username'] ?></td>
+ <? if($row['frozen'] == 'Y'){ ?>
+   <td><a href="<?= base_url() ?>index.php?/Admin/unfreeze/<?= $row['userId'] ?>">U</a></td>
+ <? } else{ ?>
+ <td><a href="<?= base_url() ?>index.php?/Admin/freeze/<?= $row['userId'] ?>">F</a></td>
+<? } ?>
+ <td><?= $row['uname'] ?></td>
  <td><?= $row['password'] ?></td>
- <td><?= $row['accesslevel'] ?></td>
+ <td><?= $row['accessLevel'] ?></td>
  <td><?= $row['frozen'] ?></td>
  </tr>
 <? } ?>
-</table> 
+</table>
 </div>
 <br/>
 
@@ -37,11 +42,11 @@
  'id' => 'password',
  'value' => set_value('password',"") )); ?> <br>
  <?= form_label('Access Level:', 'accesslevel'); ?> <br>
-<?= form_input(array('name' => 'accesslevel',
- 'id' => 'accesslevel',
- 'value' => set_value('accesslevel',"") )); ?> <br>
+<?= form_dropdown('accesslevel', $options_dropdown ); ?> <br><br>
 <?= form_submit('submit', 'Submit'); ?>
+<?= form_reset('reset', 'Clear'); ?>
 <?= form_fieldset_close(); ?>
 <?= form_close() ?>
 
 <?= $acl ?>
+</div>

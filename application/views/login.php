@@ -1,17 +1,13 @@
-<h2>Login</h2>
-
-<p><?= $msg ?></p>
-
+<div class = "loginbox">
+  <img src="<?= assetUrl() ?>img/avatar.png" class="avatar">
+    <h1 class="loginHeader">Login</h1>
+    <p><?= $msg ?></p>
 <?= form_open("Login/loginuser") ?>
-<?= form_fieldset("Login credentials"); ?>
-<?= form_label('Username:', 'username'); ?> <br>
-<?= form_input(array('name' => 'username',
- 'id' => 'username',
- 'value' => set_value('username',"") )); ?> <br>
-<?= form_label('Password:', 'password'); ?> <br>
-<?= form_input(array('name' => 'password',
- 'id' => 'password',
- 'value' => set_value('password',"") )); ?> <br>
-<?= form_submit('loginsubmit', 'Submit'); ?>
-<?= form_fieldset_close(); ?>
+      <label>Username</label>
+      <input type="text" name="username" id="username" placeholder="Enter Username">
+      <label>Password</label>
+      <input type="password" name="password" id="password" placeholder="Enter Password">
+      <input type="submit" name="loginsubmit" value="Login">
 <?= form_close() ?>
+
+</div>

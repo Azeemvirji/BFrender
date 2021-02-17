@@ -3,6 +3,10 @@
  <head>
  <title>BFrender</title>
  <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/main.css">
+ <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/style.css">
+
+ <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/signup.css">
+
  <link rel="icon" href="<?= assetUrl() ?>img/icon.png">
 
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -17,5 +21,5 @@
    <nav class="navbar navbar-style">
        <div class = "container">
            <div class="navbar-header">
-            <a href="index.php?/Home"><img class="headerLogo" src="<?= assetUrl() ?>img/headerlogo.png" alt="Mcmaster University Logo"></a>
+            <a href="index.php?/Home"><img class="logo" src="<?= assetUrl() ?>img/headerlogo.png" alt="Mcmaster University Logo"></a>
           </div>

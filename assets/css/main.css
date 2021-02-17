@@ -15,9 +15,9 @@
   box-shadow: 0 5px 10px #efefef;
 }
 
-.headerLogo
+.logo
 {
-  height:72px;
+  height:48px;
   padding: 2px 10px;
 }
 
@@ -61,4 +61,15 @@ a.btn:hover
   color: #fff;
   box-shadow: 5px 5px 10px #999;
   transition: 0.5s;
+}
+
+.icon-bar
+{
+  background: darkorange;
+}
+
+.glyphicon
+{
+  font-size: 16px;
+  color: darkorange;
 }
