@@ -30,7 +30,7 @@ li a
 {
   font-size: 52px;
   margin: 20px 0px;
-  color: darkorange;
+  color: #0062cc;
 }
 
 a.btn
@@ -43,20 +43,20 @@ a.btn
 
 a.btn-first
 {
-  background-color: darkorange;
+  background: #0062cc;
   color: #fff;
 }
 
 a.btn-second
 {
-  background: transparent;
-  border: 1px solid darkorange;
+  background: #0062cc;
+  border: 1px solid #0062cc;
   color: #333;
 }
 
 a.btn:hover
 {
-  background: orange;
+  background: #2f8bed;
   border: none;
   color: #fff;
   box-shadow: 5px 5px 10px #999;
@@ -65,11 +65,11 @@ a.btn:hover
 
 .icon-bar
 {
-  background: darkorange;
+  background: #0062cc;
 }
 
 .glyphicon
 {
   font-size: 16px;
-  color: darkorange;
+  color: #0062cc;
 }

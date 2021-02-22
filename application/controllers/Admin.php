@@ -41,28 +41,37 @@ class Admin extends CI_Controller {
 	if($this->form_validation->run()){
     $data = array(
       'uname' => $this->input->post("username"),
-      'password' => $password = $this->input->post("password"),
-      'accessLevel' => $accesslevel = $this->input->post("accesslevel"),
+      'password' => $this->input->post("password"),
+      'accessLevel' => $this->input->post("accesslevel"),
       'frozen' => 'N'
     );
 		$query = $this->db->insert('users', $data);
 	}
 
 	$this->display();
-  }
+}
 
   public function delete($id)
   {
-    $query = $this->db->query("DELETE FROM userslab6 where compid = '$id';");
+    $query = $this->db->query("DELETE FROM users where userId = '$id';");
 
     $this->display();
   }
 
   public function freeze($id)
   {
-	$query = $this->db->query("UPDATE userslab6 " .
+	$query = $this->db->query("UPDATE users " .
 							  "SET frozen = 'Y'" .
-							  " WHERE compid = '$id';");
+							  " WHERE userId = '$id';");
+
+    $this->display();
+  }
+
+  public function unfreeze($id)
+  {
+	$query = $this->db->query("UPDATE users " .
+							  "SET frozen = 'N'" .
+							  " WHERE userId = '$id';");
 
     $this->display();
   }

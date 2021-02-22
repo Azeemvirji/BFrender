@@ -1,4 +1,4 @@
-<div class = "loginbox">
+<div class = "loginbox" id="loginbox">
   <img src="<?= assetUrl() ?>img/avatar.png" class="avatar">
     <h1 class="loginHeader">Login</h1>
     <p><?= $msg ?></p>

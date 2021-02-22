@@ -20,7 +20,7 @@ class Userauth  {
       error_reporting(E_ALL & ~E_NOTICE);
       $this->login_page = base_url() . "index.php?/Login";
       $this->logout_page = base_url() . "index.php?/Home";
-	  $this->members_page = base_url() . "index.php?/Members";
+	  $this->members_page = base_url() . "index.php?/Profile";
 	  $this->home_page = base_url() . "index.php?/Home";
     }
 
@@ -66,6 +66,33 @@ class Userauth  {
 		}
 	  }
     }
+
+  public function register($data, $passwordString){
+  session_start();
+
+  if ($this->validSessionExists() == true)
+  {
+    $this->redirect($_SESSION['basepage']);
+  }
+
+  if ($_SERVER['REQUEST_METHOD'] == 'GET') return;
+
+  // Remember: you can get CodeIgniter instance from within a library with:
+  $CI =& get_instance();
+  // And then you can access database query method with:
+  //$query = $CI->db->query("INSERT INTO `user`(`fname`,`lname`,`uname`,`email`,`password`,`accesslevel`,`securityQuestion`,`securityAnswer`) values ('" + $firstname + "','" + $lastname + "','" + $username + "','" + $email + "','" + $password + "','member','" + $secQuestion + "','" + $secAnswer + "');");
+  $CI->db->insert('users', $data);
+
+  $_SESSION['validChar'] = $this->formHasValidCharacters($data['uname'], $passwordString);
+
+  if ($this->userIsInDatabase() == false)
+  {
+    return 'User didnt get inserted';
+  }else{
+    $this->writeSession();
+    $this->redirect($_SESSION['basepage']);
+  }
+}
 
     /**
     * @return void
@@ -180,12 +207,23 @@ class Userauth  {
 			if($this->password == $row['password']){
 				$this->frozen = $row['frozen'];
 				$this->accesslevel = $row['accessLevel'];
+        $this->updateLastLogin($row['uname'], $row['userId']);
 				return true;
 			}
 		  }
 	  }
       return false;
 
+    }
+
+    public function updateLastLogin($username, $userId){
+      $CI =& get_instance();
+      date_default_timezone_set('America/Toronto');
+      $data = array(
+        'lastLogin' => date("Y-m-d h:i:sa")
+      );
+      $CI->db->where('uname', $username);
+      $CI->db->update('users', $data);
     }
 
 
@@ -211,7 +249,7 @@ class Userauth  {
 		if($this->accesslevel == 'admin'){
 			$_SESSION['basepage'] = base_url() . "index.php?/Admin";
 		}else{
-			$_SESSION['basepage'] = base_url() . "index.php?/Members";
+			$_SESSION['basepage'] = base_url() . "index.php?/Profile";
 		}
 
     }

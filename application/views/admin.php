@@ -15,7 +15,7 @@
  </tr>
 <? foreach($listing as $row){ ?>
  <tr>
- <td><a href="<?= base_url() ?>index.php?/Admin/delete/<?= $row['compid'] ?>">D</a></td>
+ <td><a href="<?= base_url() ?>index.php?/Admin/delete/<?= $row['userId'] ?>">D</a></td>
  <? if($row['frozen'] == 'Y'){ ?>
    <td><a href="<?= base_url() ?>index.php?/Admin/unfreeze/<?= $row['userId'] ?>">U</a></td>
  <? } else{ ?>

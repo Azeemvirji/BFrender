@@ -1,27 +1,34 @@
-<img src="<?= assetUrl() ?>img/cons.jpg" class="img-responsive">
-<div class = "loginbox">
+<div class = "loginbox" id="registerbox">
   <img src="<?= assetUrl() ?>img/avatar.png" class="avatar">
         <h1 class="loginHeader">Register</h1>
-        <form>
-          <p>First Name</p>
-          <input type="text" name="" placeholder="Enter First name">
-          <p>Last Name</p>
-          <input type="text" name="" placeholder="Enter Last name">
-          <p>Email</p>
-          <input type="text" name="" placeholder="Enter Email ID">
-          <p>DOB</p>
-          <input type="text" name="" placeholder="Enter date of birth">
-          <p>Security Question</p>
-          <input type="text" name="" placeholder="Enter security question">
-          <p>Security Answer</p>
-          <input type="text" name="" placeholder="Enter Security Answer">
-          <p>Password</p>
-          <input type="password" name="" placeholder="Enter Password">
-          <p>Confirm Password</p>
-          <input type="password" name="" placeholder="Confirm Password">
-          <p>Upload Profile Picture</p>
-          <input type="file" id="myFile" name="filename">
-          <input type="submit" name="" value="Login">
-        </form>
+        <p><?= $msg ?></p>
+<?= form_open("Register/registeruser") ?>
+          <label>Email</label>
+          <input type="email" name="email" required placeholder="Enter Email ID" value="<?= $email ?>">
 
+          <label>Username</label>
+          <input type="text" name="username" id="username" required minlength="6" placeholder="Pick a Username" value="<?= $username ?>">
+
+          <label>Date Of Birth</label>
+          <input type="date" name="dob" id="dob" required placeholder="Please use format yyyy-mm-dd" />
+
+          <label>Password</label>
+          <input type="password" name="password" required minlength="8" placeholder="Enter Password">
+
+          <label>Confirm Password</label>
+          <input type="password" name="confirm" required minlength="8" placeholder="Confirm Password">
+
+
+
+          <input type="submit" name="submit" value="Register">
+
+
+<div>
+  <?= form_error('email', '<div class="alert alert-danger">', '</div>'); ?>
+  <?= form_error('username', '<div class="alert alert-danger">', '</div>'); ?>
+  <?= form_error('dob', '<div class="alert alert-danger">', '</div>'); ?>
+  <?= form_error('password', '<div class="alert alert-danger">', '</div>'); ?>
+  <?= form_error('confirm', '<div class="alert alert-danger">', '</div>'); ?>
+</div>
+<?= form_close() ?>
     </div>

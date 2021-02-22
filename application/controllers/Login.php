@@ -28,8 +28,8 @@ class Login extends CI_Controller {
   public function loginuser()
   {
     $this->TPL['msg'] =
-      $this->userauth->login($this->input->post("username"),
-                             $this->input->post("password"));
+      $this->userauth->login(trim($this->input->post("username")),
+                             trim($this->input->post("password")));
 
     $this->template->show('login', $this->TPL);
   }
