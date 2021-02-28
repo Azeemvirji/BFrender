@@ -90,3 +90,14 @@
     font-weight: 600;
     color: #0062cc;
 }
+@media only screen and (max-width: 1000px) {
+  .profile-edit-btn{
+    display:none;
+  }
+}
+#requirements-div {
+  width: 250px;
+  height: 150px;
+  padding: 10px;
+  border: 1px solid #aaaaaa;
+}

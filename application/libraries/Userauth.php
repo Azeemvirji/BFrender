@@ -263,4 +263,14 @@ class Userauth  {
         return $_SESSION['username'];
     }
 
+    public function changePassword($username, $password){
+      session_start();
+      $CI =& get_instance();
+
+      $CI->db->set('password', $password);
+      $CI->db->where('uname', $username);
+      $CI->db->update('users');
+
+      return $this->login($username, $password);
+    }
 }

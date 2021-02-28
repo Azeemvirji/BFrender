@@ -4,7 +4,7 @@
     <p><?= $msg ?></p>
 <?= form_open("Login/loginuser") ?>
       <label>Username</label>
-      <input type="text" name="username" id="username" placeholder="Enter Username">
+      <input type="text" name="username" id="username" value="<?= $username ?>" placeholder="Enter Username">
       <label>Password</label>
       <input type="password" name="password" id="password" placeholder="Enter Password">
       <input type="submit" name="loginsubmit" value="Login">

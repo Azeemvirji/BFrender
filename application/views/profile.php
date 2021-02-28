@@ -20,10 +20,7 @@
                                     <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="friends-tab" data-toggle="tab" href="#friends" role="tab" aria-controls="friends" aria-selected="false">Friends</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Interests</a>
+                                    <a class="nav-link" id="friends-tab" data-toggle="tab" href="#matches" role="tab" aria-controls="matches" aria-selected="false">Matches</a>
                                 </li>
                             </ul>
                         </div>
@@ -79,25 +76,17 @@
                                             </div>
                                         </div>
                             </div>
-                            <div class="tab-pane" id="friends" role="tabpanel" aria-labelledby="friends-tab">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Outdoor</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>Skydiving</p>
-                                            </div>
-                                        </div>
-                                </div>
-                            <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Outdoor</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>Skydiving</p>
-                                            </div>
-                                        </div>
+                            <div class="tab-pane" id="matches" role="tabpanel" aria-labelledby="matches-tab">
+                                        <? foreach($friends as $friend){ ?>
+                                          <div class="row">
+                                              <div class="col-md-6">
+                                                  <label><?= $friend['uname'] ?></label>
+                                              </div>
+                                              <div class="col-md-6">
+                                                  <p><?= $friend['lname'] ?></p>
+                                              </div>
+                                          </div>
+                                        <? } ?>
                                 </div>
                             </div>
                         </div>

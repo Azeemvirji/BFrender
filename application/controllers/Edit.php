@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Edit extends CI_Controller {
 
   var $TPL;
+  var $currentUser;
 
   public function __construct()
   {
@@ -11,7 +12,7 @@ class Edit extends CI_Controller {
     // Your own constructor code
 
    $this->TPL['loggedin'] = $this->userauth->loggedin();
-
+   $this->setActive('home');
   }
 
   public function index()
@@ -38,14 +39,14 @@ class Edit extends CI_Controller {
     header("Location: ". base_url() . "index.php/Profile");
   }
 
-  public function uploadPic(){
+  protected function uploadPic(){
     $CI =& get_instance();
 
     $user = $this->user->GetUserInfoFromUsername($_SESSION['username']);
     if($user['imageLocation'] != ""){
         $this->user->UpdateImageName("", $_SESSION['username']);
 
-        $url = './assets/img/' . $user['image'];
+        $url = './assets/img/users/' . $user['image'];
         if(file_exists($url)){
           unlink($url);
         }
@@ -61,6 +62,56 @@ class Edit extends CI_Controller {
         $uploadData = $this->upload->data();
         $this->user->UpdateImageName($uploadData['file_name'], $_SESSION['username']);
       }
+  }
+
+  public function ResetPassword(){
+    $this->formValidation();
+    if($this->form_validation->run() == false){
+
+      $this->setActive('password');
+      $this->template->show('edit', $this->TPL);
+    }else{
+      $this->TPL['msg'] = $this->userauth->changePassword($_SESSION['username'], $this->input->post("newPassword"));
+      header("Location: ". base_url() . "index.php/Profile");
+    }
+  }
+
+  protected function formValidation(){
+    $this->currentUser = $this->user->GetUserInfoFromUsername($_SESSION['username']);
+    $this->load->library('form_validation');
+    $this->form_validation->set_rules('currentPassword', 'Current Password', 'required|callback_is_current_password');
+    $this->form_validation->set_rules('newPassword', 'New Password', 'required|min_length[8]|callback_is_password_strong');
+    $this->form_validation->set_rules('verify', 'Confirm Password', 'required|matches[newPassword]');
+  }
+  protected function is_password_strong($password)
+  {
+     if (preg_match('#[0-9]#', $password) && preg_match('#[A-Z]#', $password)) {
+     return TRUE;
+     }
+     $this->form_validation->set_message('is_password_strong', 'Please make sure password has atleast one number and one captial letter');
+     return FALSE;
+  }
+  protected function is_current_password($password){
+    if($password == $this->currentUser['password']){
+      return TRUE;
+    }
+    $this->form_validation->set_message('is_current_password', 'Please make sure you enter your current password');
+  }
+
+  protected function setActive($item){
+    if($item == 'home'){
+       $this->TPL['home'] = "active";
+       $this->TPL['password'] = "";
+       $this->TPL['options'] = "";
+    }else if($item == 'password'){
+        $this->TPL['home'] = "";
+        $this->TPL['password'] = "active";
+        $this->TPL['options'] = "";
+    }else{
+        $this->TPL['home'] = "";
+        $this->TPL['password'] = "";
+        $this->TPL['options'] = "active";
+    }
   }
 }
 ?>

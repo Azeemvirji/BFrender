@@ -10,15 +10,13 @@
           <input type="text" name="username" id="username" required minlength="6" placeholder="Pick a Username" value="<?= $username ?>">
 
           <label>Date Of Birth</label>
-          <input type="date" name="dob" id="dob" required placeholder="Please use format yyyy-mm-dd" />
+          <input type="date" name="dob" id="dob" value="<?= $date ?>" required placeholder="Please use format yyyy-mm-dd" />
 
           <label>Password</label>
           <input type="password" name="password" required minlength="8" placeholder="Enter Password">
 
           <label>Confirm Password</label>
           <input type="password" name="confirm" required minlength="8" placeholder="Confirm Password">
-
-
 
           <input type="submit" name="submit" value="Register">
 

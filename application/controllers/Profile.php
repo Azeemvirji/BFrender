@@ -12,25 +12,25 @@ class Profile extends CI_Controller {
     date_default_timezone_set('America/Toronto');
    $_SESSION['page'] = 'profile';
    $this->TPL['loggedin'] = $this->userauth->loggedin();
-   $this->TPL['active'] = array('home' => false,
-                                'profile'=>true,
-                                //'admin' => false,
-                                'login'=>false);
   }
 
   public function index()
   {
+    $this->load->model('users');
+
     $this->getUserInfo();
+    $this->TPL['friends'] = $this->users->GetAllUsers();
     $this->template->show('profile', $this->TPL);
   }
 
-  public function getUserInfo(){
-    $this->userinfo = $this->user->GetUserInfoFromUsername($_SESSION['username']);
+  protected function getUserInfo(){
+    $this->load->model('users');
+    $this->userinfo = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     $this->TPL['user'] = $this->userinfo;
     $this->TPL['user']['age'] = $this->getAge($this->userinfo['dateOfBirth']);
   }
 
-  public function getAge($birthDate){
+  protected function getAge($birthDate){
     $birthDate = explode("-", $birthDate);
     $tdate = time();
 
