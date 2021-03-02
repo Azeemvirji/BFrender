@@ -23,6 +23,7 @@ class Profile extends CI_Controller {
     $this->template->show('profile', $this->TPL);
   }
 
+
   protected function getUserInfo(){
     $this->load->model('users');
     $this->userinfo = $this->users->GetUserInfoFromUsername($_SESSION['username']);
