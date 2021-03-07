@@ -4,33 +4,36 @@
     	<div class="col-sm-2"><a href="/users" class="pull-right"><img class="img-circle img-responsive" ></a></div>
     </div>
     <div class="row">
+      <form class="form" action="<?= base_url() ?>index.php?/Edit/Submit/" method="post" id="registrationForm" enctype="multipart/form-data">
   		<div class="col-sm-3"><!--left col-->
+          <img src="<?= assetUrl(); ?>img/users/<?= $user['imageLocation'] ?>" style="width:70%" alt="no picture uploaded"/>
+          <label for="pic"><h4>Upload a different photo</h4></label>
+          <input type="file" name="pic" id="pic" class="file-upload">
 
         </div><!--/col-3-->
     	<div class="col-sm-9">
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
                 <li><a data-toggle="tab" href="#password">Password</a></li>
-                <li><a data-toggle="tab" href="#options">Match Options</a></li>
               </ul>
 
 
           <div class="tab-content">
             <div class="tab-pane <?= $home ?>" id="home">
                 <hr>
-                  <form class="form" action="<?= base_url() ?>index.php?/Edit/Submit/" method="post" id="registrationForm" enctype="multipart/form-data">
+
                       <div class="form-group">
 
                           <div class="col-xs-6">
                               <label for="first_name"><h4>First name</h4></label>
-                              <input type="text" class="form-control" name="first_name" id="first_name" placeholder="first name" value="<?= $user['fname'] ?>" required maxlength="15" title="enter your first name">
+                              <input type="text" class="form-control" name="first_name" id="first_name" placeholder="first name" value="<?= $user['firstname'] ?>" required maxlength="15" title="enter your first name">
                           </div>
                       </div>
                       <div class="form-group">
 
                           <div class="col-xs-6">
                             <label for="last_name"><h4>Last name</h4></label>
-                              <input type="text" class="form-control" name="last_name" id="last_name" placeholder="last name" value="<?= $user['lname'] ?>" required maxlength="15" title="enter your last name">
+                              <input type="text" class="form-control" name="last_name" id="last_name" placeholder="last name" value="<?= $user['lastname'] ?>" required maxlength="15" title="enter your last name">
                           </div>
                       </div>
 
@@ -54,9 +57,9 @@
                       </div>
                       <div class="form-group">
                         <div class="col-xs-12">
-                              <label for="pic"><h4>Upload a different photo</h4></label>
-                              <input type="file" name="pic" id="pic" class="file-upload">
-                          </div>
+                            <label for="bio"><h4>Bio</h4></label><br/>
+                            <textarea id="bio" name="bio" rows="4" cols="110"><?= $user['bio'] ?></textarea>
+                        </div>
                       </div>
                       <div class="form-group">
                            <div class="col-xs-12">
@@ -108,19 +111,6 @@
                       </div>
               	</form>
 
-             </div>
-             <div class="tab-pane" id="options">
-               <hr>
-                  <form class="form" action="##" method="post" id="optionsForm">
-                    <div class="form-group">
-                      <div class="col-xs-3">
-                        <label for="requirements"><h4> Requirements</h4></label>
-                        <div id="requirements-div">
-                        </div>
-                      </div>
-                    </div>
-
-                  </form>
              </div>
               </div><!--/tab-pane-->
           </div><!--/tab-content-->

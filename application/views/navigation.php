@@ -5,6 +5,9 @@
 <li id="navigation"><a href="<?= base_url(); ?>index.php?/Admin"><span class="glyphicon glyphicon-cog"> Admin</span></a></li>
   <? } ?>
  <? if ($loggedin) { ?>
+   <li ><a href="<?= base_url(); ?>index.php?/Edit"><span class="glyphicon glyphicon-cog"> Settings</span></a></li>
+   <li><a href="<?= base_url(); ?>index.php?/Friends"><span class="glyphicon glyphicon-globe"> Friends</span></a></li>
+   <li><a href="<?= base_url(); ?>index.php?/Message"><span class="glyphicon glyphicon-comment"> Messages</span></a></li>
    <li><a href="<?= base_url(); ?>index.php?/Matches"><span class="glyphicon glyphicon-plus"> Matches</span></a></li>
  <li><a href="<?= base_url(); ?>index.php?/Profile"><span class="glyphicon glyphicon-user"> Profile</span></a></li>
  <li><a href="<?= base_url(); ?>index.php?/Login/logout"><span class="glyphicon glyphicon-log-out"> Logout</span></a></li>

@@ -11,3 +11,5 @@
 <?= form_close() ?>
 
 </div>
+
+ <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/style.css">

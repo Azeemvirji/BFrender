@@ -12,6 +12,10 @@ class Message extends CI_Controller {
    $this->TPL['loggedin'] = $this->userauth->loggedin();
   }
 
+  public function index(){
+    $this->template->show('message', $this->TPL);
+  }
+
   public function chat($uname){
     $this->TPL['chatUname'] = $uname;
     $this->template->show('message', $this->TPL);

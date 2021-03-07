@@ -21,7 +21,7 @@
  <? } else{ ?>
  <td><a href="<?= base_url() ?>index.php?/Admin/freeze/<?= $row['userId'] ?>">F</a></td>
 <? } ?>
- <td><?= $row['uname'] ?></td>
+ <td><?= $row['username'] ?></td>
  <td><?= $row['password'] ?></td>
  <td><?= $row['accessLevel'] ?></td>
  <td><?= $row['frozen'] ?></td>
@@ -49,4 +49,33 @@
 <?= form_close() ?>
 
 <?= $acl ?>
+
+<br/>
+<br/>
+
+<?= form_open("Admin/AddCategory") ?>
+<?= form_label('Category:', 'category'); ?> <br/>
+<?= form_input(array('name' => 'categoryName',
+ 'id' => 'categoryName',
+ 'value' => set_value('categoryName',"") ));?> <br><br/>
+<?= form_submit('submit', 'Submit'); ?>
+<?= form_reset('reset', 'Clear'); ?>
+<?= form_close() ?>
+
+<h3>Add Tag</h3>
+<?= form_open("Admin/AddTag") ?>
+<?= form_label('Select Category:', 'category'); ?> <br/>
+<select id="category" name="category">
+  <? foreach($category as $row){ ?>
+    <option value="<?= $row['categoryId'] ?>"><?= $row['categoryName'] ?></option>
+  <? } ?>
+</select><br/>
+<?= form_label('Tag name:', 'tag'); ?> <br/>
+<?= form_input(array('name' => 'tag',
+ 'id' => 'tag',
+ 'value' => set_value('tag',"") ));?> <br><br/>
+<?= form_submit('submit', 'Submit'); ?>
+<?= form_reset('reset', 'Clear'); ?>
+<?= form_close() ?>
+
 </div>

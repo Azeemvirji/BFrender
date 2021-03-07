@@ -3,8 +3,7 @@
  <head>
  <title>BFrender</title>
  <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/main.css">
- <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/style.css">
- <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/profile.css">
+
 
  <link rel="icon" href="<?= assetUrl() ?>img/icon.png">
 

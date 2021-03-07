@@ -10,6 +10,8 @@ class Admin extends CI_Controller {
     parent::__construct();
     // Your own constructor code
 
+    $this->load->model('tags');
+
    $_SESSION['page'] = 'admin';
    $this->TPL['loggedin'] = $this->userauth->loggedin();
    $this->TPL['isAdmin'] = $this->userauth->isAdmin();
@@ -26,7 +28,9 @@ class Admin extends CI_Controller {
   private function display()
   {
     $query = $this->db-> query("SELECT * FROM users ORDER BY userId ASC;");
-	$this->TPL['listing'] = $query->result_array();
+	   $this->TPL['listing'] = $query->result_array();
+
+     $this->TPL['category'] = $this->tags->GetAllCategory();
 
     $this->template->show('admin', $this->TPL);
   }
@@ -36,11 +40,44 @@ class Admin extends CI_Controller {
 	$this->display();
   }
 
+  public function AddCategory(){
+    $this->categoryValidation();
+    $this->load->model('tags');
+    if($this->form_validation->run()){
+      $this->tags->AddCategory($this->input->post("categoryName"));
+    }
+
+
+    $this->display();
+  }
+
+  public function categoryValidation(){
+    $this->load->library('form_validation');
+
+    $this->form_validation->set_rules('categoryName', 'Category', 'required|is_unique[category.categoryName]');
+  }
+
+  public function AddTag(){
+    $this->tagValidation();
+    $this->load->model('tags');
+    if($this->form_validation->run()){
+      $this->tags->AddTag($this->input->post("category"),$this->input->post("tag"));
+    }
+
+    $this->display();
+  }
+
+  public function tagValidation(){
+    $this->load->library('form_validation');
+
+    $this->form_validation->set_rules('tag', 'Tag Name', 'required|is_unique[tags.tagName]');
+  }
+  
   public function addUser(){
 	$this->formValidation();
 	if($this->form_validation->run()){
     $data = array(
-      'uname' => $this->input->post("username"),
+      'username' => $this->input->post("username"),
       'password' => $this->input->post("password"),
       'accessLevel' => $this->input->post("accesslevel"),
       'frozen' => 'N'

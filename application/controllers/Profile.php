@@ -9,6 +9,12 @@ class Profile extends CI_Controller {
   {
     parent::__construct();
     // Your own constructor code
+
+    //adding the models neededs
+    $this->load->model('tags');
+    $this->load->model('users');
+    $this->load->model('friendsmodel');
+
     date_default_timezone_set('America/Toronto');
    $_SESSION['page'] = 'profile';
    $this->TPL['loggedin'] = $this->userauth->loggedin();
@@ -16,18 +22,47 @@ class Profile extends CI_Controller {
 
   public function index()
   {
-    $this->load->model('users');
+    $this->display();
+  }
 
+  public function addFriend($friendUname){
+    $userId = $this->users->GetUserID($_SESSION['username']);
+    $friendId = $this->users->GetUserID($friendUname);
+
+    $this->friends->AddFriends($userId, $friendId);
+
+    $this->TPL['msg'] = "You are now friends with " . $friendUname;
+    $this->display();
+  }
+
+  public function Debug(){
+    print_r($this->friendsmodel->GetFriendsForUser(4));
+  }
+
+  protected function display(){
     $this->getUserInfo();
-    $this->TPL['friends'] = $this->users->GetAllUsers();
+    $this->TPL['usersAdd'] = $this->users->GetAllUsers();
+    $this->TPL['friends'] = $this->friendsmodel->GetFriendsForUser($this->userinfo['userId']);
+    $this->TPL['tags'] = $this->GetTags($this->userinfo['userId']);
+
     $this->template->show('profile', $this->TPL);
   }
 
+  protected function GetTags($userId) {
+    $tagsId = $this->tags->GetUserTags($userId);
+    $tags = [];
+
+    foreach ($tagsId as $row) {
+      array_push($tags, $this->tags->GetTagName($row['tagId']));
+    }
+
+    return $tags;
+  }
 
   protected function getUserInfo(){
-    $this->load->model('users');
     $this->userinfo = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     $this->TPL['user'] = $this->userinfo;
+    $this->TPL['user']['bio'] = $this->users->GetUserBio($this->userinfo['userId']);
     $this->TPL['user']['age'] = $this->getAge($this->userinfo['dateOfBirth']);
   }
 

@@ -83,7 +83,7 @@ class Userauth  {
   //$query = $CI->db->query("INSERT INTO `user`(`fname`,`lname`,`uname`,`email`,`password`,`accesslevel`,`securityQuestion`,`securityAnswer`) values ('" + $firstname + "','" + $lastname + "','" + $username + "','" + $email + "','" + $password + "','member','" + $secQuestion + "','" + $secAnswer + "');");
   $CI->db->insert('users', $data);
 
-  $_SESSION['validChar'] = $this->formHasValidCharacters($data['uname'], $passwordString);
+  $_SESSION['validChar'] = $this->formHasValidCharacters($data['username'], $passwordString);
 
   if ($this->userIsInDatabase() == false)
   {
@@ -222,7 +222,7 @@ class Userauth  {
       $data = array(
         'lastLogin' => date("Y-m-d h:i:sa")
       );
-      $CI->db->where('uname', $username);
+      $CI->db->where('username', $username);
       $CI->db->update('users', $data);
     }
 

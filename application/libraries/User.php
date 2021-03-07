@@ -9,7 +9,7 @@ class user  {
     public function GetUserID($username){
   		$CI =& get_instance();
 
-  		$CI->db->where('uname', $username);
+  		$CI->db->where('username', $username);
   		$query = $CI->db->get('users');
   		$users = $query->result_array();
 
@@ -19,7 +19,7 @@ class user  {
   public function GetUserInfoFromUsername($username){
   $CI =& get_instance();
 
-  $CI->db->where('uname', $username);
+  $CI->db->where('username', $username);
   $query = $CI->db->get('users');
   $users = $query->result_array();
 
@@ -40,7 +40,7 @@ public function UpdateImageName($imgName, $username){
 	$CI =& get_instance();
 
 	$CI->db->set('imageLocation', $imgName);
-	$CI->db->where('uname', $username);
+	$CI->db->where('username', $username);
 	$CI->db->update('users');
 }
 

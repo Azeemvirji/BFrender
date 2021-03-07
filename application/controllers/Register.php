@@ -31,13 +31,14 @@ class Register extends CI_Controller {
     //if everything the user entered meets the requirments proceed to add them to the database
     if($this->form_validation->run() == true){
       $data = array(
-        'uname' => $uname,
+        'username' => $uname,
         'email' => $email,
         'password' => $this->input->post("password"),
         'dateOfBirth' => $date,
         'accessLevel' => "member",
         'frozen' => 'N',
-        'dateJoined' => date("Y-m-d h:i:sa")
+        'dateJoined' => date("Y-m-d h:i:sa"),
+        'imageLocation' => 'default.png'
       );
       //if the registeration is unsuccessfull, get the reason and show it to the user
       $this->TPL['msg'] = $this->userauth->register($data, $this->input->post("password"));
@@ -54,8 +55,8 @@ class Register extends CI_Controller {
   public function formValidation(){
     $this->load->library('form_validation');
     //username must be atleast 5 in length and be unique
-    $this->form_validation->set_rules('username', 'Username', 'required|min_length[5]|is_unique[users.uname]');
-    $this->form_validation->set_rules('dob', 'Date Of Birth', 'required');
+    $this->form_validation->set_rules('username', 'Username', 'required|min_length[5]|is_unique[users.username]');
+    $this->form_validation->set_rules('dob', 'Date Of Birth', 'required|callback_is_over_18');
     //must be a valid email and be unique
     $this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[users.email]');
     //password must be atleast 8 in length and be strong with atleast one number and one captial letter
@@ -74,5 +75,25 @@ class Register extends CI_Controller {
 	   $this->form_validation->set_message('is_password_strong', 'Please make sure password has atleast one number and one captial letter');
 	   return FALSE;
 	}
+
+  public function is_over_18($dob){
+    $age = $this->getAge($dob);
+    if($age >= 18){
+      return TRUE;
+    }
+    $this->form_validation->set_message('is_over_18', 'You must be atleast 18 to sign up');
+    return FALSE;
+  }
+
+  protected function getAge($birthDate){
+    $birthDate = explode("-", $birthDate);
+    $tdate = time();
+
+    $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[2], $birthDate[1], $birthDate[0]))) > date("md")
+    ? ((date("Y") - $birthDate[0]) - 1)
+    : (date("Y") - $birthDate[0]));
+
+    return $age;
+  }
 }
 ?>

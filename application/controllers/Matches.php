@@ -6,6 +6,7 @@ class Matches extends CI_Controller {
   {
     parent::__construct();
     // Your own constructor code
+    $this->load->model('users');
     date_default_timezone_set('America/Toronto');
    $_SESSION['page'] = 'matches';
    $this->TPL['loggedin'] = $this->userauth->loggedin();
@@ -13,7 +14,7 @@ class Matches extends CI_Controller {
 
   public function index()
   {
-    $this->TPL['user'] = $this->user->GetUserInfoFromUsername($_SESSION['username']);
+    $this->TPL['user'] = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     $this->template->show('matches', $this->TPL);
   }
 

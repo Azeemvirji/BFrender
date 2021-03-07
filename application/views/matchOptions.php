@@ -10,8 +10,8 @@
   <div class="row">
     <div class="col-md-3">
       <!-- Requirements -->
-         <div class="panel panel-default">
-           <div class="panel-heading">
+         <div class="panel panel-default greenBorder">
+           <div class="requirementsDiv">
              <h4 class="panel-title">Requirements</h4>
            </div>
            <div class="panel-body">
@@ -21,8 +21,8 @@
          </div>
 
          <!-- Preferences -->
-         <div class="panel panel-default">
-           <div class="panel-heading">
+         <div class="panel panel-default blueBorder">
+           <div class="preferencesDiv">
            <h4 class="panel-title">Preferences</h4>
            </div>
            <div class="panel-body">
@@ -32,9 +32,9 @@
          </div>
 
          <!-- DealBreaker -->
-         <div class="panel panel-default">
-           <div class="panel-heading">
-           <h4 class="panel-title">DealBreaker</h4>
+         <div class="panel panel-default redBorder">
+           <div class="dealbreakersDiv">
+           <h4 class="panel-title" style="">DealBreaker</h4>
            </div>
            <div class="panel-body">
              <div class="dealbreaker tag-container">
@@ -64,11 +64,9 @@
                          <div class="portlet-body chat-widget tag-container" style="overflow-y: auto; width: auto; height: 300px;">
                            <div class="row">
                              <div class="col-lg-12">
-                                   <div class="list-item" draggable="true">Hiking1</div>
-                                   <div class="list-item" draggable="true">Hiking2</div>
-                                   <div class="list-item" draggable="true">Hiking3</div>
-                                   <div class="list-item" draggable="true">Hiking4</div>
-                                   <div class="list-item" draggable="true">Hiking5</div>
+                                   <?php foreach ($tags as $row): ?>
+                                     <div class="list-item" draggable="true"><?= $row['tagName'] ?></div>
+                                   <?php endforeach; ?>
                            </div>
                          </div>
                        </div>
@@ -89,9 +87,9 @@
                      <h4 class="panel-title">Tag Category</h4>
                    </div>
                    <div class="panel-body">
-                     <p>All       452</p>
-                     <p>Outdoor   4</p>
-                     <p>sports    31</p>
+                     <?php foreach ($category as $row): ?>
+                       <?= $row['categoryName'] ?><br/>
+                     <?php endforeach; ?>
                    </div>
                  </div>
                </div>
@@ -148,6 +146,37 @@ for (let i = 0; i < list_items.length; i++) {
   height:auto;
   min-height: 50px;
 }
+
+.dealbreakersDiv{
+  background-color:red;
+  color: white;
+  padding: 10px 15px;
+}
+
+.redBorder{
+  border: 2px solid red;
+}
+
+.preferencesDiv{
+  background-color:blue;
+  color: white;
+  padding: 10px 15px;
+}
+
+.blueBorder{
+  border: 2px solid blue;
+}
+
+.requirementsDiv{
+  background-color:green;
+  color: white;
+  padding: 10px 15px;
+}
+
+.greenBorder{
+  border: 2px solid green;
+}
+
 </style>
 
  <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/matchOptions.css">

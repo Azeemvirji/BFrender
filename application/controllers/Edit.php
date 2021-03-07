@@ -10,14 +10,16 @@ class Edit extends CI_Controller {
   {
     parent::__construct();
     // Your own constructor code
-
+    $this->load->model('users');
    $this->TPL['loggedin'] = $this->userauth->loggedin();
    $this->setActive('home');
   }
 
   public function index()
   {
-    $this->TPL['user'] = $this->user->GetUserInfoFromUsername($_SESSION['username']);
+    $this->currentUser = $this->users->GetUserInfoFromUsername($_SESSION['username']);
+    $this->TPL['user'] = $this->currentUser;
+    $this->TPL['user']['bio'] = trim($this->users->GetUserBio($this->currentUser['userId']));
     $this->template->show('edit', $this->TPL);
   }
 
@@ -27,22 +29,24 @@ class Edit extends CI_Controller {
       }
 
     $data = array(
-      'fname' => $this->input->post("first_name"),
-      'lname' => $this->input->post("last_name"),
+      'firstname' => $this->input->post("first_name"),
+      'lastname' => $this->input->post("last_name"),
       'email' => $this->input->post("email"),
       'gender' => $this->input->post("gender")
     );
-    $this->db->where('uname', $_SESSION['username']);
+    $this->db->where('username', $_SESSION['username']);
     $query = $this->db->update('users', $data);
 
-    $this->TPL['user'] = $this->user->GetUserInfoFromUsername($_SESSION['username']);
+    $this->users->UpdateBio($_SESSION['username'], $this->input->post("bio"));
+
+    $this->TPL['user'] = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     header("Location: ". base_url() . "index.php/Profile");
   }
 
   protected function uploadPic(){
     $CI =& get_instance();
 
-    $user = $this->user->GetUserInfoFromUsername($_SESSION['username']);
+    $user = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     if($user['imageLocation'] != ""){
         $this->user->UpdateImageName("", $_SESSION['username']);
 
@@ -77,7 +81,7 @@ class Edit extends CI_Controller {
   }
 
   protected function formValidation(){
-    $this->currentUser = $this->user->GetUserInfoFromUsername($_SESSION['username']);
+    $this->currentUser = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     $this->load->library('form_validation');
     $this->form_validation->set_rules('currentPassword', 'Current Password', 'required|callback_is_current_password');
     $this->form_validation->set_rules('newPassword', 'New Password', 'required|min_length[8]|callback_is_password_strong');
