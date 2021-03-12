@@ -1,3 +1,38 @@
+.requirments, .preferences, .dealbreaker{
+  height:auto;
+  min-height: 50px;
+}
+
+.dealbreakersDiv{
+  background-color:red;
+  color: white;
+  padding: 10px 15px;
+}
+
+.redBorder{
+  border: 2px solid red;
+}
+
+.preferencesDiv{
+  background-color:blue;
+  color: white;
+  padding: 10px 15px;
+}
+
+.blueBorder{
+  border: 2px solid blue;
+}
+
+.requirementsDiv{
+  background-color:green;
+  color: white;
+  padding: 10px 15px;
+}
+
+.greenBorder{
+  border: 2px solid green;
+}
+
 .list-item{
   background-color: #FFCE00;
   border-radius: 25px;

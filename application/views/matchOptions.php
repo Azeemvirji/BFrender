@@ -15,7 +15,7 @@
              <h4 class="panel-title">Requirements</h4>
            </div>
            <div class="panel-body">
-             <div class="requirments tag-container">
+             <div class="requirments tag-container" id="requirments">
              </div>
            </div>
          </div>
@@ -26,7 +26,7 @@
            <h4 class="panel-title">Preferences</h4>
            </div>
            <div class="panel-body">
-             <div class="preferences tag-container">
+             <div class="preferences tag-container" id="preferences">
              </div>
            </div>
          </div>
@@ -37,7 +37,7 @@
            <h4 class="panel-title" style="">DealBreaker</h4>
            </div>
            <div class="panel-body">
-             <div class="dealbreaker tag-container">
+             <div class="dealbreaker tag-container" id="dealbreaker">
              </div>
            </div>
          </div>
@@ -61,11 +61,11 @@
 
                      <div id="chat" class="panel-collapse collapse in">
 
-                         <div class="portlet-body chat-widget tag-container" style="overflow-y: auto; width: auto; height: 300px;">
+                         <div class="portlet-body chat-widget tag-container" style="overflow-y: auto; width: auto; height: 300px;" id="main">
                            <div class="row">
-                             <div class="col-lg-12">
+                             <div class="col-lg-12" id="tagsAvailable">
                                    <?php foreach ($tags as $row): ?>
-                                     <div class="list-item" draggable="true"><?= $row['tagName'] ?></div>
+                                     <div class="list-item" draggable="true" id="<?= $row['tagName'] ?>"><?= $row['tagName'] ?></div>
                                    <?php endforeach; ?>
                            </div>
                          </div>
@@ -87,8 +87,9 @@
                      <h4 class="panel-title">Tag Category</h4>
                    </div>
                    <div class="panel-body">
+                     <a href="" id="All" onclick="return getTags(this.id)">All</a><br/>
                      <?php foreach ($category as $row): ?>
-                       <?= $row['categoryName'] ?><br/>
+                       <a href="" id="<?= $row['categoryName'] ?>" onclick="return getTags(this.id)"><?= $row['categoryName'] ?></a><br/>
                      <?php endforeach; ?>
                    </div>
                  </div>
@@ -96,8 +97,11 @@
 
              </div>
            </div>
+           <div id="testResult">
+           </div>
 
 <script>
+function adddragging(){
 const list_items = document.querySelectorAll('.list-item');
 const containers = document.querySelectorAll('.tag-container');
 
@@ -135,48 +139,55 @@ for (let i = 0; i < list_items.length; i++) {
 		});
 
 		container.addEventListener('drop', function (e) {
-			this.append(draggedItem);
+      if(draggedItem != null){
+			     this.append(draggedItem);
+           weight = this.id;
+           tagName = draggedItem.id;
+
+           setWeight(weight, tagName);
+
+           e.stopImmediatePropagation()
+      }
 		});
 	}
 }
+}
+adddragging();
+  function getTags(category){
+    var url = window.location.href;
+		if(url.includes("index.php?")){
+			url = "index.php?/MatchOptions/GetTagsForCategory";
+		}else{
+			url = "MatchOptions/GetTagsForCategory";
+		}
+    $.ajax({
+      type:'POST',
+      data:{category: category},
+      url:url,
+      success: function(result){
+        $('#tagsAvailable').html(result);
+          adddragging();
+      }
+    });
+
+    return false;
+  }
+
+  function setWeight(weight, tagName){
+    var url = window.location.href;
+    if(url.includes("index.php?")){
+      url = "index.php?/MatchOptions/SetWeight";
+    }else{
+      url = "MatchOptions/SetWeight";
+    }
+    $.ajax({
+      type:'POST',
+      data:{weight: weight, tagName: tagName},
+      url:url,
+      success: function(result){
+
+      }
+    });
+  }
 </script>
-
-<style>
-.requirments, .preferences, .dealbreaker{
-  height:auto;
-  min-height: 50px;
-}
-
-.dealbreakersDiv{
-  background-color:red;
-  color: white;
-  padding: 10px 15px;
-}
-
-.redBorder{
-  border: 2px solid red;
-}
-
-.preferencesDiv{
-  background-color:blue;
-  color: white;
-  padding: 10px 15px;
-}
-
-.blueBorder{
-  border: 2px solid blue;
-}
-
-.requirementsDiv{
-  background-color:green;
-  color: white;
-  padding: 10px 15px;
-}
-
-.greenBorder{
-  border: 2px solid green;
-}
-
-</style>
-
  <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/matchOptions.css">

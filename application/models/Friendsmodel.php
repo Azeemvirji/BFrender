@@ -5,23 +5,19 @@ class Friendsmodel extends CI_Model{
   protected $table = 'friends';
 
   public function AddFriends($userId, $friendId){
-    $CI =& get_instance();
-
     $data = array('userId' => $userId,
                   'friendId' => $friendId
                 );
 
-    $CI->db->insert($this->table, $data);
+    $this->db->insert($this->table, $data);
   }
 
   public function GetFriendsForUser($userId){
-    $CI =& get_instance();
-
     $this->load->model('users');
 
     $friends = [];
 
-    $query = $CI->db->get($this->table);
+    $query = $this->db->get($this->table);
     $relationships = $query->result_array();
 
     foreach($relationships as $relation){

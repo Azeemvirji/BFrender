@@ -27,7 +27,22 @@ class MatchOptions extends CI_Controller {
       $this->template->show('matchOptions', $this->TPL);
     }
 
-    protected function GetTags($userId) {
+    public function SetWeight(){
+      $weight = $this->input->post('weight');
+      $tagName = $this->input->post('tagName');
+    }
+
+    public function GetTagsForCategory(){
+      $category = $this->input->post('category');
+
+      $tags = $this->tags->GetTagsForCategory($category);
+
+      foreach($tags as $tag){
+        echo "<div class=\"list-item\" draggable=\"true\" id=" . <?= $row['tagName'] ?> . ">" . $tag['tagName'] . "</div>";
+      }
+    }
+
+    protected function GetTagsForUser($userId) {
       $tagsId = $this->tags->GetUserTags($userId);
       $tags = [];
 
