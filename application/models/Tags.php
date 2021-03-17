@@ -90,14 +90,6 @@ class Tags extends CI_Model{
     return $users[0]['tagName'];
   }
 
-  public function CheckIfTagInDatabase($userId, $tagId){
-    $this->db->where('userId', $userId);
-    $this->db->where('tagId', $tagId);
-    $query = $this->db->get('relational');
-
-    return $query[0]['userId'];
-  }
-
 // function to add weights for the user to the tag
   public function AddWeightForTag($userId, $tagId, $weight)
   {
