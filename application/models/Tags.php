@@ -92,6 +92,27 @@ class Tags extends CI_Model{
 
     return $users[0]['tagName'];
   }
+
+// function to add weights for the user to the tag
+  public function AddWeightForTag($userId, $tagId, $weight)
+  {
+
+
+    $this->db->set('weight',$weight);
+    $this->db->where('useIid', $userId);
+    $this->db->where('tagId', $tagId);
+
+    $this->db->update('relational');
+  }
+//removes the entry in the relational table
+  public function RemoveTagForUser($userId, $tagId)
+  {
+
+    $this->db->where('userid', $userId);
+    $this->db->where('tagId', $tagId);
+    $this->db->delete('relational');
+  }
+
 }
 
 ?>
