@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Admin extends CI_Controller {
 
   var $TPL;
+  var $selectedCategory = "";
 
   public function __construct()
   {
@@ -29,7 +30,7 @@ class Admin extends CI_Controller {
   {
     $query = $this->db-> query("SELECT * FROM users ORDER BY userId ASC;");
 	   $this->TPL['listing'] = $query->result_array();
-
+     $this->TPL['selectedCategory'] = $this->selectedCategory;
      $this->TPL['category'] = $this->tags->GetAllCategory();
 
     $this->template->show('admin', $this->TPL);
@@ -47,7 +48,6 @@ class Admin extends CI_Controller {
       $this->tags->AddCategory($this->input->post("categoryName"));
     }
 
-
     $this->display();
   }
 
@@ -64,6 +64,8 @@ class Admin extends CI_Controller {
       $this->tags->AddTag($this->input->post("category"),$this->input->post("tag"));
     }
 
+    $this->selectedCategory = $this->input->post("category");
+
     $this->display();
   }
 
@@ -72,7 +74,7 @@ class Admin extends CI_Controller {
 
     $this->form_validation->set_rules('tag', 'Tag Name', 'required|is_unique[tags.tagName]');
   }
-  
+
   public function addUser(){
 	$this->formValidation();
 	if($this->form_validation->run()){

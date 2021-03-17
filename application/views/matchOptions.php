@@ -89,7 +89,7 @@
                    <div class="panel-body">
                      <a href="" id="All" onclick="return getTags(this.id)">All</a><br/>
                      <?php foreach ($category as $row): ?>
-                       <a href="" id="<?= $row['categoryName'] ?>" onclick="return getTags(this.id)"><?= $row['categoryName'] ?></a><br/>
+                       <a href="" id="<?= $row['categoryName'] ?>" onclick=" return getTags(this.id)"><?= $row['categoryName'] ?></a><br/>
                      <?php endforeach; ?>
                    </div>
                  </div>
@@ -101,7 +101,7 @@
            </div>
 
 <script>
-function adddragging(){
+function addDragging(){
 const list_items = document.querySelectorAll('.list-item');
 const containers = document.querySelectorAll('.tag-container');
 
@@ -147,12 +147,12 @@ for (let i = 0; i < list_items.length; i++) {
            setWeight(weight, tagName);
 
            e.stopImmediatePropagation()
-      }
-		});
-	}
-}
-}
-adddragging();
+        }
+  		});
+  	}
+  }
+  }
+  addDragging();
   function getTags(category){
     var url = window.location.href;
 		if(url.includes("index.php?")){
@@ -166,7 +166,7 @@ adddragging();
       url:url,
       success: function(result){
         $('#tagsAvailable').html(result);
-          adddragging();
+          addDragging();
       }
     });
 
@@ -185,7 +185,7 @@ adddragging();
       data:{weight: weight, tagName: tagName},
       url:url,
       success: function(result){
-
+        console.log(result);
       }
     });
   }

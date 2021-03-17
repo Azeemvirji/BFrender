@@ -23,6 +23,46 @@ class Profile extends CI_Controller {
   public function index()
   {
     $this->display();
+
+  }
+
+  public function RemoveInterest(){
+    $tag = $this->input->post('tag');
+
+    $tagId = $this->tags->GetTagId($tag);
+    $userId = $this->users->GetUserID($_SESSION['username']);
+
+    $this->tags->RemoveTagForUser($userId, $tagId);
+
+    $tags = $this->tags->GetUserTags($userId);
+
+    foreach($tags as $tag){
+      $tagName = $this->tags->GetTagName($tag['tagId']);
+      echo "<a href=\"\" id=\"" . $tagName . "\" onclick=\"return removeTag(this.id)\">" . $tagName . "</a><br/>";
+    }
+  }
+
+  public function AddInterest(){
+    $tag = $this->input->post('tag');
+
+    $tagId = $this->tags->GetTagId($tag);
+    $userId = $this->users->GetUserID($_SESSION['username']);
+
+    //Add check if user already has this tag, echo success for not and msg if they do
+
+    $this->tags->AddRelationalTag($tagId, $userId);
+  }
+
+  public function GetTagsForCategory(){
+    $category = $this->input->post('category');
+
+    $tags = $this->tags->GetTagsForCategory($category);
+
+    $tags = $this->RemoveUserTags($tags);
+
+    foreach($tags as $tag){
+      echo "<a href=\"\" id=\"" . $tag['tagName'] . "\" onclick=\"return addInterest(this.id)\">" . $tag['tagName'] . "</a><br/>";
+    }
   }
 
   public function addFriend($friendUname){
@@ -36,16 +76,32 @@ class Profile extends CI_Controller {
   }
 
   public function Debug(){
-    print_r($this->friendsmodel->GetFriendsForUser(4));
+    print_r($this->RemoveUserTags($this->tags->GetAllTags()));
   }
 
   protected function display(){
     $this->getUserInfo();
     $this->TPL['usersAdd'] = $this->users->GetAllUsers();
     $this->TPL['friends'] = $this->friendsmodel->GetFriendsForUser($this->userinfo['userId']);
-    $this->TPL['tags'] = $this->GetTags($this->userinfo['userId']);
+    $this->TPL['userTags'] = $this->GetTags($this->userinfo['userId']);
+    $this->TPL['allTags'] = $this->RemoveUserTags($this->tags->GetAllTags());
+    $this->TPL['category']  = $this->tags->GetAllCategory();
 
     $this->template->show('profile', $this->TPL);
+  }
+
+  public function RemoveUserTags($tags){
+    $this->getUserInfo();
+    $updated = [];
+    $userTags = $this->GetTags($this->userinfo['userId']);
+
+    foreach($tags as $tag){
+      if(!in_array($tag['tagName'], $userTags)){
+        array_push($updated, $tag);
+      }
+    }
+
+    return $updated;
   }
 
   protected function GetTags($userId) {

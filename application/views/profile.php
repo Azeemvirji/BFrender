@@ -1,5 +1,5 @@
 <div class="container emp-profile">
-            <center><?= $msg ?></center>
+            <center id="msg"><?= $msg ?></center>
             <form method="post" action="<?= base_url(); ?>index.php?/Edit">
                 <div class="row">
                     <div class="col-md-4">
@@ -80,18 +80,95 @@
                     </div>
                     <div class="row">
                       <div class="col-md-4">
-                        <label>Interests</label><a href="<?= base_url(); ?>index.php?/Interests" style="float:right">change</a>
+                        <label>Interests</label><a data-toggle="collapse" href="#IntrestsCollapse" aria-expanded="false" aria-controls="IntrestsCollapse" style="float:right">Change</a>
                         <div class="panel panel-default">
-                        <div class="panel-body" style="min-height:100px">
-                          <?php foreach ($tags as $row): ?>
-                            <p><?= $row ?></p>
+                        <div class="panel-body" id="interestDiv" style="min-height:100px">
+                          <?php foreach ($userTags as $row): ?>
+                            <a href="" id="<?= $row ?>" onclick="return removeTag(this.id)"><?= $row ?></a><br/>
                           <?php endforeach; ?>
                         </div>
                         </div>
                       </div>
+                      <div class="collapse col-md-4" id="IntrestsCollapse">
+                        <label id="interestsLabel">All</label><a data-toggle="collapse" href="#CategoryCollapse" aria-expanded="false" aria-controls="CategoryCollapse" style="float:right">Category</a>
+                        <div class="panel panel-default">
+                        <div class="panel-body" id="tagsAvailable" style="min-height:100px">
+                          <?php foreach ($allTags as $row): ?>
+                            <?php if ($row['tagName'] != ""): ?>
+                              <a href="" id="<?= $row['tagName'] ?>" onclick="return addInterest(this.id)"><?= $row['tagName'] ?></a><br/>
+                            <?php endif; ?>
+                          <?php endforeach; ?>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="collapse col-md-3" id="CategoryCollapse">
+                      <div class="panel panel-default">
+                      <div class="panel-body" style="min-height:100px">
+                        <a href="" id="All" onclick="return changeCategory(this.id)">All</a><br/>
+                        <? foreach($category as $row){ ?>
+                          <a href="" id="<?= $row['categoryName'] ?>" onclick="return changeCategory(this.id)"><?= $row['categoryName'] ?></a><br/>
+                        <? } ?>
+                      </div>
+                      </div>
+                  </div>
                     </div>
                 </div>
             </form>
         </div>
-
+<script>
+  function removeTag(tag){
+    var url = window.location.href;
+    if(url.includes("index.php?")){
+      url = "index.php?/Profile/RemoveInterest";
+    }else{
+      url = "Profile/RemoveInterest";
+    }
+    $.ajax({
+      type:'POST',
+      data:{tag: tag},
+      url:url,
+      success: function(result){
+        $('#interestDiv').html(result);
+        console.log(result);
+      }
+    });
+    return false;
+  }
+  function addInterest(tag){
+    var url = window.location.href;
+    if(url.includes("index.php?")){
+      url = "index.php?/Profile/AddInterest";
+    }else{
+      url = "Profile/AddInterest";
+    }
+    $.ajax({
+      type:'POST',
+      data:{tag: tag},
+      url:url,
+      success: function(result){
+        $('#interestDiv').append("<a href=\"\" id=\"" + tag + "\" onclick=\"return removeTag(this.id)\">" + tag + "</a>");
+        changeCategory($('#interestsLabel').html());
+      }
+    });
+    return false;
+  }
+  function changeCategory(category){
+    var url = window.location.href;
+    if(url.includes("index.php?")){
+      url = "index.php?/Profile/GetTagsForCategory";
+    }else{
+      url = "Profile/GetTagsForCategory";
+    }
+    $.ajax({
+      type:'POST',
+      data:{category: category},
+      url:url,
+      success: function(result){
+        $('#tagsAvailable').html(result);
+        $('#interestsLabel').html(category);
+      }
+    });
+    return false;
+  }
+</script>
          <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/profile.css">

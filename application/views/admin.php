@@ -67,7 +67,7 @@
 <?= form_label('Select Category:', 'category'); ?> <br/>
 <select id="category" name="category">
   <? foreach($category as $row){ ?>
-    <option value="<?= $row['categoryId'] ?>"><?= $row['categoryName'] ?></option>
+    <option <? if($selectedCategory == $row['categoryId'] ){echo "selected";} ?> value="<?= $row['categoryId'] ?>"><?= $row['categoryName'] ?></option>
   <? } ?>
 </select><br/>
 <?= form_label('Tag name:', 'tag'); ?> <br/>
