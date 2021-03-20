@@ -30,6 +30,11 @@ class MatchOptions extends CI_Controller {
     public function SetWeight(){
       $weight = $this->input->post('weight');
       $tagName = $this->input->post('tagName');
+
+      $tagId = $this->tags->GetTagId($tagName);
+      $userId = $this->users->GetUserID($_SESSION['username']);
+
+      echo "" . $this->tags->AddWeightForTag($userId, $tagId, $weight);
     }
 
     public function GetTagsForCategory(){
@@ -38,7 +43,7 @@ class MatchOptions extends CI_Controller {
       $tags = $this->tags->GetTagsForCategory($category);
 
       foreach($tags as $tag){
-        echo "<div class=\"list-item\" draggable=\"true\" id=" . <?= $row['tagName'] ?> . ">" . $tag['tagName'] . "</div>";
+        echo "<div class=\"list-item\" draggable=\"true\" id=" . $tag['tagName'] . ">" . $tag['tagName'] . "</div>";
       }
     }
 

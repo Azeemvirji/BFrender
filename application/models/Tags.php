@@ -9,6 +9,7 @@ class Tags extends CI_Model{
   }
 
   public function GetAllCategory(){
+    $this->db->order_by('categoryName','asc');
     $query = $this->db->get('category');
     $category = $query->result_array();
 
@@ -30,12 +31,6 @@ class Tags extends CI_Model{
     );
 
     $this->db->insert('tags', $data);
-
-    $tagId = $this->GetTagId($tag);
-    $this->load->model('users');
-    $userId = $this->users->GetUserID($_SESSION['username']);
-
-    $this->AddRelationalTag($tagId, $userId);
   }
 
   public function AddRelationalTag($tagId, $userId){
@@ -44,7 +39,7 @@ class Tags extends CI_Model{
       'tagId' => $tagId
     );
 
-    $this->db->insert('relational', $data);
+    return $this->db->insert('relational', $data);
   }
 
   public function GetTagId($tag){
@@ -56,6 +51,7 @@ class Tags extends CI_Model{
   }
 
   public function GetAllTags(){
+    $this->db->order_by('tagName','asc');
     $query = $this->db->get('tags');
     $tags = $query->result_array();
 
@@ -77,6 +73,7 @@ class Tags extends CI_Model{
     }else{
       $categoryId = $this->GetCategoryId($category);
 
+      $this->db->order_by('tagName','asc');
       $this->db->where('categoryId', $categoryId);
       $query = $this->db->get('tags');
       $tags = $query->result_array();
@@ -96,19 +93,21 @@ class Tags extends CI_Model{
 // function to add weights for the user to the tag
   public function AddWeightForTag($userId, $tagId, $weight)
   {
+    $this->RemoveTagForUser($userId, $tagId);
 
+    $data = array(
+      'userId' => $userId,
+      'tagId' => $tagId,
+      'weight' => $weight
+    );
 
-    $this->db->set('weight',$weight);
-    $this->db->where('useIid', $userId);
-    $this->db->where('tagId', $tagId);
-
-    $this->db->update('relational');
+    $this->db->insert('relational', $data);
   }
+
 //removes the entry in the relational table
   public function RemoveTagForUser($userId, $tagId)
   {
-
-    $this->db->where('userid', $userId);
+    $this->db->where('userId', $userId);
     $this->db->where('tagId', $tagId);
     $this->db->delete('relational');
   }
