@@ -31,6 +31,17 @@ class Friendsmodel extends CI_Model{
     return $friends;
   }
 
+  public function CheckIfFriends($userId, $friendId)
+  {
+    $this->db->select('userId', 'friendId');
+    $this->db->where('userId', $userId);
+    $this->db->where('friendId', $friendId);
+    $query = $this->db->get('friends');
+    $friends = $query->result_array();
+
+    return $friends;
+  }
+
 }
 
 ?>
