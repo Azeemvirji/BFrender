@@ -2,28 +2,6 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Tags extends CI_Model{
-  public function AddCategory($categoryName){
-    $data = array('categoryName' => $categoryName);
-
-    $this->db->insert('category', $data);
-  }
-
-  public function GetAllCategory(){
-    $this->db->order_by('categoryName','asc');
-    $query = $this->db->get('category');
-    $category = $query->result_array();
-
-    return $category;
-  }
-
-  public function GetCategoryId($category){
-    $this->db->where('categoryName', $category);
-    $query = $this->db->get('category');
-    $category = $query->result_array();
-
-    return $category[0]['categoryId'];
-  }
-
   public function AddTag($category, $tag){
     $data = array(
       'categoryId' => $category,
@@ -33,13 +11,13 @@ class Tags extends CI_Model{
     $this->db->insert('tags', $data);
   }
 
-  public function AddRelationalTag($tagId, $userId){
+  public function AddRelationalTag($tagId, $userId, $table){
     $data = array(
       'userId' => $userId,
       'tagId' => $tagId
     );
 
-    return $this->db->insert('relational', $data);
+    return $this->db->insert($table, $data);
   }
 
   public function GetTagId($tag){
@@ -58,10 +36,10 @@ class Tags extends CI_Model{
     return $tags;
   }
 
-  public function GetUserTags($userId){
+  public function GetUserTags($userId, $table){
     $this->db->select('tagId');
     $this->db->where('userId', $userId);
-    $query = $this->db->get('relational');
+    $query = $this->db->get($table);
     $tagsId = $query->result_array();
 
     return $tagsId;
@@ -71,7 +49,8 @@ class Tags extends CI_Model{
     if($category == "All"){
       $tags = $this->GetAllTags();
     }else{
-      $categoryId = $this->GetCategoryId($category);
+      $this->load->model('category');
+      $categoryId = $this->category->GetCategoryId($category);
 
       $this->db->order_by('tagName','asc');
       $this->db->where('categoryId', $categoryId);
@@ -91,27 +70,35 @@ class Tags extends CI_Model{
   }
 
 // function to add weights for the user to the tag
-  public function AddWeightForTag($userId, $tagId, $weight)
+  public function AddWeightForTag($userId, $tagId, $type)
   {
-    $this->RemoveTagForUser($userId, $tagId);
+    $this->RemoveTagForUser($userId, $tagId, "TagsRelational");
 
     $data = array(
       'userId' => $userId,
       'tagId' => $tagId,
-      'weight' => $weight
+      'type' => $type
     );
 
-    $this->db->insert('relational', $data);
+    $this->db->insert('TagsRelational', $data);
   }
 
 //removes the entry in the relational table
-  public function RemoveTagForUser($userId, $tagId)
+  public function RemoveTagForUser($userId, $tagId, $table)
   {
     $this->db->where('userId', $userId);
     $this->db->where('tagId', $tagId);
-    $this->db->delete('relational');
+    $this->db->delete($table);
   }
 
+  public function GetTagsByWeightForUser($type,$userId){
+    $this->db->where('userId', $userId);
+    $this->db->where('type', $type);
+    $query = $this->db->get('TagsRelational');
+    $tags = $query->result_array();
+
+    return $tags;
+  }
 }
 
 ?>

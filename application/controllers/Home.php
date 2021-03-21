@@ -8,11 +8,13 @@ class Home extends CI_Controller {
   public function __construct()
   {
     parent::__construct();
+    // Your own constructor code
 
    $_SESSION['page'] = 'home';
    $this->TPL['loggedin'] = $this->userauth->validSessionExists();
    $this->TPL['active'] = array('home' => true,
                                 'members'=>false,
+                                'admin' => false,
                                 'login'=>false);
 
   }

@@ -14,7 +14,7 @@ class Members extends CI_Controller {
    $this->TPL['loggedin'] = $this->userauth->loggedin();
    $this->TPL['active'] = array('home' => false,
                                 'members'=>true,
-                                //'admin' => false,
+                                'admin' => false,
                                 'login'=>false);
   }
 

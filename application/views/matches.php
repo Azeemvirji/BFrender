@@ -34,17 +34,21 @@
  }
 </style>
 <div class="container">
-  <form method="post" action="<?= base_url(); ?>index.php?/MatchOptions">
-    <div class="row">
-      <div class="col-md-6" id="matchesHeader">
-        <h3>Matches</h3>
-      </div>
-      <div class="col-md-6">
-        <input type="submit" value="Match Options" id="matchesBtn"/>
-      </div>
+	<form method="post" action="<?= base_url(); ?>index.php?/MatchOptions">
+	<!-- Match option button -->
+	<div class="row">
+	<div class="col-md-6" id="matchesHeader">
+       <h3>Top Friend Matches</h3>
     </div>
+	<div class="col-md-6">
+        <input type="submit" value="Match Options" id="matchesBtn"/>
+	</div>
+	</div>
+	
+	<!-- Matches -->
+	<? foreach($matches as $match){ ?>
     <div class="row">
-   <div class="profile-head">
+	<div class="profile-head">
       <div class="profiles container thumbnail">
         <div class="col-md-2 col-sm-3 col-xs-5">
           <div class="row">
@@ -54,7 +58,7 @@
         </div>
            <div class="col-md-9 col-sm-8 col-xs-9">
              <div class="row">
-                     <div class="col-sm-12"><h4>Jenifer Smith</h4>
+                     <div class="col-sm-12"><h4>Jennifer Smith</h4>
                      <hr>
                      </div>
 
@@ -87,5 +91,5 @@
     </div><!--profile-head close-->
   </div><!--row-close-->
   </form>
-
+<? } ?>
 </div>

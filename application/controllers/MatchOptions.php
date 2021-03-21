@@ -10,6 +10,8 @@ class MatchOptions extends CI_Controller {
       // Your own constructor code
       $this->load->model('tags');
       $this->load->model('users');
+      $this->load->model('category');
+
      $_SESSION['page'] = 'matchOptions';
      $this->TPL['loggedin'] = $this->userauth->loggedin();
     }
@@ -18,32 +20,76 @@ class MatchOptions extends CI_Controller {
       $this->display();
     }
 
+    public function Debug($userId, $tagId, $type){
+      $this->tags->AddWeightForTag($userId, $tagId, $type);
+    }
+
     protected function display()
     {
-      $this->TPL['category'] = $this->tags->GetAllCategory();
-      $this->TPL['tags'] = $this->tags->GetAllTags();
-      //$this->TPL['tags'] = $this->GetTags($this->users->GetUserID($_SESSION['username']));
+      $requirements = $this->GetTagsForWeights("requirements");
+      $preferences = $this->GetTagsForWeights("preferences");
+      $dealbreaker = $this->GetTagsForWeights("dealbreaker");
+
+      $this->TPL['category'] = $this->category->GetAllCategory();
+      $this->TPL['tags'] = $this->RemoveUsedTags($this->tags->GetAllTags(), $requirements, $preferences, $dealbreaker);
+      $this->TPL['requirements'] = $requirements;
+      $this->TPL['preferences'] = $preferences;
+      $this->TPL['dealbreaker'] = $dealbreaker;
 
       $this->template->show('matchOptions', $this->TPL);
     }
 
+    public function GetTagsForWeights($weight){
+      $user = $this->users->GetUserInfoFromUsername($_SESSION['username']);
+
+      $tags = $this->tags->GetTagsByWeightForUser($weight, $user['userId']);
+      $names = [];
+
+      foreach ($tags as $tag) {
+        array_push($names, $this->tags->GetTagName($tag['tagId']));
+      }
+
+      return $names;
+    }
+
+    public function RemoveUsedTags($allTags, $requirements, $preferences, $dealbreaker){
+      $updated = [];
+
+      foreach ($allTags as $tag) {
+        if(!in_array($tag['tagName'], $requirements) and !in_array($tag['tagName'], $preferences) and !in_array($tag['tagName'], $dealbreaker)){
+          array_push($updated, $tag);
+        }
+      }
+
+      return $updated;
+    }
+
     public function SetWeight(){
-      $weight = $this->input->post('weight');
+      $type = $this->input->post('weight');
       $tagName = $this->input->post('tagName');
 
       $tagId = $this->tags->GetTagId($tagName);
       $userId = $this->users->GetUserID($_SESSION['username']);
 
-      echo "" . $this->tags->AddWeightForTag($userId, $tagId, $weight);
+      if($type == "main"){
+        $this->tags->RemoveTagForUser($userId, $tagId, "TagsRelational");
+      }else{
+        $this->tags->AddWeightForTag($userId, $tagId, $type);
+      }
     }
 
     public function GetTagsForCategory(){
       $category = $this->input->post('category');
+      $requirements = $this->GetTagsForWeights("requirements");
+      $preferences = $this->GetTagsForWeights("preferences");
+      $dealbreaker = $this->GetTagsForWeights("dealbreaker");;
 
       $tags = $this->tags->GetTagsForCategory($category);
 
       foreach($tags as $tag){
-        echo "<div class=\"list-item\" draggable=\"true\" id=" . $tag['tagName'] . ">" . $tag['tagName'] . "</div>";
+        if(!in_array($tag['tagName'], $requirements) and !in_array($tag['tagName'], $preferences) and !in_array($tag['tagName'], $dealbreaker)){
+          echo "<div class=\"list-item\" draggable=\"true\" id=\"" . $tag['tagName'] . "\">" . $tag['tagName'] . "</div>";
+        }
       }
     }
 

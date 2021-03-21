@@ -17,7 +17,7 @@
 
 										<div class="col-sm-6 col-xs-6">
 											<p><?= $friend['firstname'] ?> <?= $friend['lastname'] ?></p>
-											<p>22 yrs</p>
+											<p><?= $friend['age'] ?> yrs</p>
 											<p>Toronto</p>
 										</div>
 										 <div class="col-sm-6 col-xs-6">
@@ -30,7 +30,7 @@
 					</div>
 				 <div class="col-md-1 col-sm-1 col-xs-3">
 					 <ul class="nav navbar-vertical navbar-right bg-danger">
-							<li><a class="lnk_usr text-dgr-link" href="#" title="Contacts">
+							<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/ViewProfile/view/<?= $friend['username'] ?>" title="Contacts">
 								<span class="tooltp text-center"> Profile</span>
 									<span class="glyphicon glyphicon-user"></span>
 								</a></li>

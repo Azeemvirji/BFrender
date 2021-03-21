@@ -90,14 +90,9 @@
                         </div>
                       </div>
                       <div class="collapse col-md-4" id="IntrestsCollapse">
-                        <label id="interestsLabel">All</label><a data-toggle="collapse" href="#CategoryCollapse" aria-expanded="false" aria-controls="CategoryCollapse" style="float:right">Category</a>
+                        <label id="interestsLabel"></label><a data-toggle="collapse" href="#CategoryCollapse" aria-expanded="false" aria-controls="CategoryCollapse" style="float:right">Category</a>
                         <div class="panel panel-default">
                         <div class="panel-body" id="tagsAvailable" style="min-height:100px">
-                          <?php foreach ($allTags as $row): ?>
-                            <?php if ($row['tagName'] != ""): ?>
-                              <a href="" id="<?= $row['tagName'] ?>" onclick="return addInterest(this.id)"><?= $row['tagName'] ?></a><br/>
-                            <?php endif; ?>
-                          <?php endforeach; ?>
                         </div>
                         </div>
                     </div>
@@ -116,6 +111,14 @@
             </form>
         </div>
 <script>
+  /*
+    Description: When a user click on a interest they have, it will remove it by calling this method
+    this method will get the name of the interest and then call the RemoveInterest method in the Controller
+    If everything goes well it will get the updated interest and for the user from the controller and update the interestDiv
+
+    Input: Name of the tag being removed
+    Ouput: false to stop the page from reloading
+  */
   function removeTag(tag){
     var url = window.location.href;
     if(url.includes("index.php?")){
@@ -129,11 +132,19 @@
       url:url,
       success: function(result){
         $('#interestDiv').html(result);
-        console.log(result);
       }
     });
     return false;
   }
+
+  /*1313
+    Description: When a user clicks a Interest they want to add to their profile this method will be called
+    it will get the name of that interest and call the AddInterest method in the controller
+    if everything goes well it will append the new interest to the interestDiv and update the available interests
+
+    Input: Name of the tag being added
+    Ouput: false to stop the page from reloading
+  */
   function addInterest(tag){
     var url = window.location.href;
     if(url.includes("index.php?")){
@@ -146,12 +157,19 @@
       data:{tag: tag},
       url:url,
       success: function(result){
-        $('#interestDiv').append("<a href=\"\" id=\"" + tag + "\" onclick=\"return removeTag(this.id)\">" + tag + "</a>");
+        $('#interestDiv').append("<a href=\"\" id=\"" + tag + "\" onclick=\"return removeTag(this.id)\">" + tag + "</a><br/>");
         changeCategory($('#interestsLabel').html());
       }
     });
     return false;
   }
+
+  /*
+  Description: When the user wants to get interests from a different category they click this and the method changes the category
+
+  Input: Name of the category the user selected
+  Ouput: false to stop the page from reloading
+*/
   function changeCategory(category){
     var url = window.location.href;
     if(url.includes("index.php?")){
@@ -170,5 +188,8 @@
     });
     return false;
   }
+
+  // this call is here to populate the avaliable interests when we first load in
+  changeCategory("All");
 </script>
          <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/profile.css">

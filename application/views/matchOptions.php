@@ -15,7 +15,10 @@
              <h4 class="panel-title">Requirements</h4>
            </div>
            <div class="panel-body">
-             <div class="requirments tag-container" id="requirments">
+             <div class="requirements tag-container" id="requirements">
+               <?php foreach ($requirements as $row): ?>
+                 <div class="list-item" draggable="true" id="<?= $row ?>"><?= $row ?></div>
+               <?php endforeach; ?>
              </div>
            </div>
          </div>
@@ -27,6 +30,9 @@
            </div>
            <div class="panel-body">
              <div class="preferences tag-container" id="preferences">
+               <?php foreach ($preferences as $row): ?>
+                 <div class="list-item" draggable="true" id="<?= $row ?>"><?= $row ?></div>
+               <?php endforeach; ?>
              </div>
            </div>
          </div>
@@ -38,6 +44,9 @@
            </div>
            <div class="panel-body">
              <div class="dealbreaker tag-container" id="dealbreaker">
+               <?php foreach ($dealbreaker as $row): ?>
+                 <div class="list-item" draggable="true" id="<?= $row ?>"><?= $row ?></div>
+               <?php endforeach; ?>
              </div>
            </div>
          </div>
@@ -53,7 +62,7 @@
                    <div class="portlet portlet-default">
                      <div class="portlet-heading">
                        <div class="portlet-title">
-                         <h4>Tags Available</h4>
+                         <h4 id="interestsLabel">All</h4>
                        </div>
 
                      <div class="clearfix"></div>
@@ -62,13 +71,11 @@
                      <div id="chat" class="panel-collapse collapse in">
 
                          <div class="portlet-body chat-widget tag-container" style="overflow-y: auto; width: auto; height: 300px;" id="main">
-                           <div class="row">
-                             <div class="col-lg-12" id="tagsAvailable">
+
                                    <?php foreach ($tags as $row): ?>
                                      <div class="list-item" draggable="true" id="<?= $row['tagName'] ?>"><?= $row['tagName'] ?></div>
                                    <?php endforeach; ?>
-                           </div>
-                         </div>
+
                        </div>
                      </div>
                    </div>
@@ -140,13 +147,14 @@ for (let i = 0; i < list_items.length; i++) {
 
 		container.addEventListener('drop', function (e) {
       if(draggedItem != null){
-			     this.append(draggedItem);
-           weight = this.id;
-           tagName = draggedItem.id;
+         weight = this.id;
+         tagName = draggedItem.id;
 
-           setWeight(weight, tagName);
+         this.append(draggedItem);
 
-           e.stopImmediatePropagation()
+         setWeight(weight, tagName);
+
+         e.stopImmediatePropagation()
         }
   		});
   	}
@@ -165,8 +173,9 @@ for (let i = 0; i < list_items.length; i++) {
       data:{category: category},
       url:url,
       success: function(result){
-        $('#tagsAvailable').html(result);
-          addDragging();
+        $('#main').html(result);
+        $("#interestsLabel").html(category);
+        addDragging();
       }
     });
 
@@ -185,7 +194,6 @@ for (let i = 0; i < list_items.length; i++) {
       data:{weight: weight, tagName: tagName},
       url:url,
       success: function(result){
-        console.log(result);
       }
     });
   }

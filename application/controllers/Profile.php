@@ -14,6 +14,7 @@ class Profile extends CI_Controller {
     $this->load->model('tags');
     $this->load->model('users');
     $this->load->model('friendsmodel');
+    $this->load->model('category');
 
     date_default_timezone_set('America/Toronto');
    $_SESSION['page'] = 'profile';
@@ -23,36 +24,37 @@ class Profile extends CI_Controller {
   public function index()
   {
     $this->display();
-
   }
 
-  public function RemoveInterest(){
-    $tag = $this->input->post('tag');
+  protected function display(){
+    $this->getUserInfo();
+    $this->TPL['userTags'] = $this->GetTagsForUser($this->userinfo['userId'], "InterestRelational");
+    $this->TPL['category']  = $this->category->GetAllCategory();
 
-    $tagId = $this->tags->GetTagId($tag);
-    $userId = $this->users->GetUserID($_SESSION['username']);
+    $this->template->show('profile', $this->TPL);
+  }
 
-    $this->tags->RemoveTagForUser($userId, $tagId);
+  /*
+  Getting the tags/interests for the user and since they are id we need to get the name before returning them
+  Input: userId
+  Output: array of all the interests names
+  */
+  protected function GetTagsForUser($userId) {
+    $tagsId = $this->tags->GetUserTags($userId, "InterestRelational");
+    $tags = [];
 
-    $tags = $this->tags->GetUserTags($userId);
-
-    foreach($tags as $tag){
-      $tagName = $this->tags->GetTagName($tag['tagId']);
-      echo "<a href=\"\" id=\"" . $tagName . "\" onclick=\"return removeTag(this.id)\">" . $tagName . "</a><br/>";
+    foreach ($tagsId as $row) {
+      array_push($tags, $this->tags->GetTagName($row['tagId']));
     }
+
+    return $tags;
   }
 
-  public function AddInterest(){
-    $tag = $this->input->post('tag');
-
-    $tagId = $this->tags->GetTagId($tag);
-    $userId = $this->users->GetUserID($_SESSION['username']);
-
-    //Add check if user already has this tag, echo success for not and msg if they do
-
-    $this->tags->AddRelationalTag($tagId, $userId);
-  }
-
+  /*
+  gets all the insterest in a perticular category, intended to use by ajax
+  Input(post) : categoryName
+  Output: all the the interest in the category echoed out to a tags
+  */
   public function GetTagsForCategory(){
     $category = $this->input->post('category');
 
@@ -65,35 +67,59 @@ class Profile extends CI_Controller {
     }
   }
 
-  public function addFriend($friendUname){
+  /*
+  Removes an interest for the user in the database, intended to be used by ajax
+  Input(post): name of the interest the user selected
+  Output: Updated current user tags after removing echoed out to a tags
+  */
+  public function RemoveInterest(){
+    $tag = $this->input->post('tag');
+
+    $tagId = $this->tags->GetTagId($tag);
     $userId = $this->users->GetUserID($_SESSION['username']);
-    $friendId = $this->users->GetUserID($friendUname);
 
-    $this->friends->AddFriends($userId, $friendId);
+    $this->tags->RemoveTagForUser($userId, $tagId, "InterestRelational");
 
-    $this->TPL['msg'] = "You are now friends with " . $friendUname;
-    $this->display();
+    $tags = $this->tags->GetUserTags($userId, "InterestRelational");
+
+    foreach($tags as $tag){
+      $tagName = $this->tags->GetTagName($tag['tagId']);
+      echo "<a href=\"\" id=\"" . $tagName . "\" onclick=\"return removeTag(this.id)\">" . $tagName . "</a><br/>";
+    }
   }
 
+  /*
+  Adds an interest for a user in the database, intended to be used by ajax
+  Input(post): name of the interest the user selected
+  Output: none
+  */
+  public function AddInterest(){
+    $tag = $this->input->post('tag');
+
+    $tagId = $this->tags->GetTagId($tag);
+    $userId = $this->users->GetUserID($_SESSION['username']);
+
+    //Add check if user already has this tag, echo success for not and msg if they do
+
+    $this->tags->AddRelationalTag($tagId, $userId, "InterestRelational");
+  }
+
+  /*
+  used to see the output of variables, perticularly the models
+  */
   public function Debug(){
-    print_r($this->RemoveUserTags($this->tags->GetAllTags()));
+    //print_r($this->RemoveUserTags($this->tags->GetAllTags()));
   }
 
-  protected function display(){
-    $this->getUserInfo();
-    $this->TPL['usersAdd'] = $this->users->GetAllUsers();
-    $this->TPL['friends'] = $this->friendsmodel->GetFriendsForUser($this->userinfo['userId']);
-    $this->TPL['userTags'] = $this->GetTags($this->userinfo['userId']);
-    $this->TPL['allTags'] = $this->RemoveUserTags($this->tags->GetAllTags());
-    $this->TPL['category']  = $this->tags->GetAllCategory();
-
-    $this->template->show('profile', $this->TPL);
-  }
-
+  /*
+  removes the tags that the user currently has from the array provided
+  input: list of tags
+  output: modified list
+  */
   public function RemoveUserTags($tags){
     $this->getUserInfo();
     $updated = [];
-    $userTags = $this->GetTags($this->userinfo['userId']);
+    $userTags = $this->GetTagsForUser($this->userinfo['userId']);
 
     foreach($tags as $tag){
       if(!in_array($tag['tagName'], $userTags)){
@@ -104,17 +130,12 @@ class Profile extends CI_Controller {
     return $updated;
   }
 
-  protected function GetTags($userId) {
-    $tagsId = $this->tags->GetUserTags($userId);
-    $tags = [];
-
-    foreach ($tagsId as $row) {
-      array_push($tags, $this->tags->GetTagName($row['tagId']));
-    }
-
-    return $tags;
-  }
-
+  /*
+  Gets all the info that the profile page would need
+  Modifies the TPL array that will be passed on to the page
+  Input: None
+  Output: None
+  */
   protected function getUserInfo(){
     $this->userinfo = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     $this->TPL['user'] = $this->userinfo;
@@ -122,6 +143,11 @@ class Profile extends CI_Controller {
     $this->TPL['user']['age'] = $this->getAge($this->userinfo['dateOfBirth']);
   }
 
+  /*
+  Calculates the age of our user using the date of birth
+  Input: Date of birth
+  Output: calculated age
+  */
   protected function getAge($birthDate){
     $birthDate = explode("-", $birthDate);
     $tdate = time();
