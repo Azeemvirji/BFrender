@@ -4,11 +4,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Messagesmodel extends CI_Model{
   protected $table = 'messages';
 
-  public function GetConversation($messageId)
+  public function GetConversation($friendsId)
   {
-    $query = $this->db->get_where('messages', array('messageId' => $messageId), $limit, $offset);
+    $this->db->where('friendsID', $friendsId);
+    $this->db->order_by('timeSent','asc');
+    $query = $this->db->get($this->table);
+    $coversation = $query->result_array();
 
-    return $query;
+    return $coversation;
   }
 
   public function AddMessage($friendsID, $messageString, $senderID, $timeSent)
@@ -21,8 +24,6 @@ class Messagesmodel extends CI_Model{
       );
 
       $this->db->insert($this->table, $data);
-
-
   }
 
   public function GetMessage($friendsID, $senderID)

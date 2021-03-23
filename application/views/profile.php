@@ -120,12 +120,7 @@
     Ouput: false to stop the page from reloading
   */
   function removeTag(tag){
-    var url = window.location.href;
-    if(url.includes("index.php?")){
-      url = "index.php?/Profile/RemoveInterest";
-    }else{
-      url = "Profile/RemoveInterest";
-    }
+    var url = "<?= base_url() ?>index.php?/Profile/RemoveInterest";
     $.ajax({
       type:'POST',
       data:{tag: tag},
@@ -137,7 +132,7 @@
     return false;
   }
 
-  /*1313
+  /*
     Description: When a user clicks a Interest they want to add to their profile this method will be called
     it will get the name of that interest and call the AddInterest method in the controller
     if everything goes well it will append the new interest to the interestDiv and update the available interests
@@ -146,12 +141,7 @@
     Ouput: false to stop the page from reloading
   */
   function addInterest(tag){
-    var url = window.location.href;
-    if(url.includes("index.php?")){
-      url = "index.php?/Profile/AddInterest";
-    }else{
-      url = "Profile/AddInterest";
-    }
+    var url = "<?= base_url() ?>index.php?/Profile/AddInterest";
     $.ajax({
       type:'POST',
       data:{tag: tag},
@@ -171,12 +161,7 @@
   Ouput: false to stop the page from reloading
 */
   function changeCategory(category){
-    var url = window.location.href;
-    if(url.includes("index.php?")){
-      url = "index.php?/Profile/GetTagsForCategory";
-    }else{
-      url = "Profile/GetTagsForCategory";
-    }
+    var url = "<?= base_url() ?>index.php?/Profile/GetTagsForCategory";
     $.ajax({
       type:'POST',
       data:{category: category},

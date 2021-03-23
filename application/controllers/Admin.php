@@ -12,6 +12,7 @@ class Admin extends CI_Controller {
     // Your own constructor code
 
     $this->load->model('tags');
+    $this->load->model('category');
 
    $_SESSION['page'] = 'admin';
    $this->TPL['loggedin'] = $this->userauth->loggedin();
@@ -31,7 +32,7 @@ class Admin extends CI_Controller {
     $query = $this->db-> query("SELECT * FROM users ORDER BY userId ASC;");
 	   $this->TPL['listing'] = $query->result_array();
      $this->TPL['selectedCategory'] = $this->selectedCategory;
-     $this->TPL['category'] = $this->tags->GetAllCategory();
+     $this->TPL['category'] = $this->category->GetAllCategory();
 
     $this->template->show('admin', $this->TPL);
   }

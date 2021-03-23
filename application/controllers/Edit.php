@@ -48,9 +48,9 @@ class Edit extends CI_Controller {
 
     $user = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     if($user['imageLocation'] != ""){
-        $this->user->UpdateImageName("", $_SESSION['username']);
+        $this->users->UpdateImageName("", $_SESSION['username']);
 
-        $url = './assets/img/users/' . $user['image'];
+        $url = './assets/img/users/' . $user['imageLocation'];
         if(file_exists($url)){
           unlink($url);
         }
@@ -64,7 +64,7 @@ class Edit extends CI_Controller {
         $this->TPL['error'] = array('error' => $this->upload->display_errors());
       }else{
         $uploadData = $this->upload->data();
-        $this->user->UpdateImageName($uploadData['file_name'], $_SESSION['username']);
+        $this->users->UpdateImageName($uploadData['file_name'], $_SESSION['username']);
       }
   }
 

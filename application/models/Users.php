@@ -35,6 +35,14 @@ class Users extends CI_Model{
     $this->db->update('users');
   }
 
+  public function GetImageName($username){
+    $this->db->where('username', $username);
+    $query = $this->db->get('users');
+    $users = $query->result_array();
+
+    return $users[0]['imageLocation'];
+  }
+
   public function GetAllUsers(){
     $query = $this->db->get('users');
     $users = $query->result_array();

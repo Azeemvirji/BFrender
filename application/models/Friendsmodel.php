@@ -12,6 +12,24 @@ class Friendsmodel extends CI_Model{
     $this->db->insert($this->table, $data);
   }
 
+  public function GetFriendsId($userId, $friendId){
+    $query = $this->db->get($this->table);
+    $relationships = $query->result_array();
+
+    foreach($relationships as $relation){
+      if($relation['userId'] == $userId){
+        if($relation['friendId'] == $friendId){
+          return $relation['friendsId'];
+        }
+      }elseif($relation['userId'] == $friendId){
+        if($relation['friendId'] == $userId){
+          return $relation['friendsId'];
+        }
+      }
+    }
+
+  }
+
   public function GetFriendsForUser($userId){
     $this->load->model('users');
 
@@ -19,10 +37,10 @@ class Friendsmodel extends CI_Model{
 
     $query = $this->db->get($this->table);
     $relationships = $query->result_array();
-	
+
 	// We need: username, firstname, lastname, profile_pic/default_pic, age(from dob)
 	// , # of common interests, a list of (some) common interests, and a suggested activity ~ Peter
-	
+
     foreach($relationships as $relation){
 		$nextID = '';
 		$NextFriend = [];
@@ -35,32 +53,32 @@ class Friendsmodel extends CI_Model{
       }
 	  if($nextID != ''){
 		  $UserInfoArray = $this->users->GetUserInfoFromUserId($relation[$nextID]);
-		  
+
 		  #names
 		  $NextFriend['username'] = $UserInfoArray['username'];
 		  $NextFriend['firstname'] = $UserInfoArray['firstname'];
 		  $NextFriend['lastname'] = $UserInfoArray['lastname'];
-		  
+
 		  #image
 		  $NextFriend['imageLocation'] = $UserInfoArray['imageLocation'];
-		  
+
 		  #age
 		  $age = $this->getAge($UserInfoArray['dateOfBirth']);
 		  $NextFriend['age'] = $age;
-		  
+
 		  #city
 		  $NextFriend['city'] = 'Toronto'; #todo: get relevant db
-		  
+
 		  #Common Interests (?) todo: add a count, and list some interests.
 		  $NextFriend['InterestCount'] = 3;
-		  
+
 		  #$NextFriend['CommonInterest'] = 'Test' #May try to turn this into an array.
-		  
-		  
+
+
 		  #Suggested Activity
 		  $NextFriend['ActivitySuggestion'] = 'Hiking'; #todo: make algorithm
-		  
-		  
+
+
 		  array_push($friends, $NextFriend);#$this->users->GetUserInfoFromUserId($relation[$nextID]));
 	  }
     }
