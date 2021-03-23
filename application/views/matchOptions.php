@@ -91,7 +91,7 @@
                  <!-- Tag Category -->
                  <div class="panel panel-default">
                    <div class="panel-heading">
-                     <h4 class="panel-title">Tag Category</h4>
+                     <h4 class="panel-title">Interest Categories</h4>
                    </div>
                    <div class="panel-body">
                      <a href="" id="All" onclick="return getTags(this.id)">All</a><br/>
