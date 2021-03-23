@@ -52,13 +52,13 @@
       <div class="profiles container thumbnail">
         <div class="col-md-2 col-sm-3 col-xs-5">
           <div class="row">
-            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="img-responsive"/>
+            <img src="<?= assetUrl(); ?>img/users/<?= $match['imageLocation'] ?>" class="img-responsive"/>
 
           </div>
         </div>
            <div class="col-md-9 col-sm-8 col-xs-9">
              <div class="row">
-                     <div class="col-sm-12"><h4>Jennifer Smith</h4>
+                     <div class="col-sm-12"><h4><?= $match['firstname'] ?> <?= $match['lastname'] ?></h4>
                      <hr>
                      </div>
 
