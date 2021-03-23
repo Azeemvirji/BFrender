@@ -63,9 +63,10 @@
                      </div>
 
                       <div class="col-sm-6 col-xs-6">
-                        <p>22 yrs</p>
+                        <p><?= $match['age'] ?> yrs</p>
                         <p>North York</p>
                         <p>Toronto</p>
+						<p>Rank: <?= $match['rank'] ?>, Score: <?= $match['score'] ?></p>
                       </div>
                        <div class="col-sm-6 col-xs-6">
                           <h5>7 Common Interest Including:</h5>
