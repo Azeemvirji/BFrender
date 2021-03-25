@@ -60,13 +60,14 @@
              <div class="row">
                      <div class="col-sm-12"><h4><?= $match['firstname'] ?> <?= $match['lastname'] ?></h4>
                      <hr>
+					 <p>Rank: <?= $match['rank'] ?>, Score: <?= $match['score'] ?></p>
                      </div>
 
                       <div class="col-sm-6 col-xs-6">
                         <p><?= $match['age'] ?> yrs</p>
                         <p>North York</p>
                         <p>Toronto</p>
-						<p>Rank: <?= $match['rank'] ?>, Score: <?= $match['score'] ?></p>
+						<p>Last Active: <?= $match['lastlogin'] ?> days ago</p>
                       </div>
                        <div class="col-sm-6 col-xs-6">
                           <h5>7 Common Interest Including:</h5>
