@@ -62,7 +62,7 @@ class MatchesModel extends CI_Model{
 		$TestInfoArray = $this->users->GetUserInfoFromUserId($testId);
 		
 		
-		// Score = W1*DemographicScore+W2*PreferedInterestScore+W3*MatchingInterestScore+W4*SimilarInterestScore+W5*ActivityScore+...
+		// Score = W1*DemographicScore+W2*PreferedInterestScore+W3*MatchingInterestScore+W4*InterestCatagoryScore+W5*ActivityScore+...
 		$score = 0;
 
 		// Demographic Score: City, Gender, Age, etc.
@@ -71,12 +71,14 @@ class MatchesModel extends CI_Model{
 		$UAge = $this->getAge($UserInfoArray['dateOfBirth']);
 		$TAge = $this->getAge($TestInfoArray['dateOfBirth']);
 		
-		
 		$AgeScore = 100/(1+abs($UAge-$TAge));
 		
 		
 		
 		$score = $score + $W1*($AgeScore);
+		
+		// 
+		
 		
 		
 		
