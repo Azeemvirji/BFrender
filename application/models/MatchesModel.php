@@ -33,6 +33,8 @@ class MatchesModel extends CI_Model{
 			$age = $this->getAge($UserInfoArray['dateOfBirth']);
 			$NextMatch['age'] = $age;
 			
+			#last active
+			$NextMatch['lastlogin'] = $this->getActiveTime($UserInfoArray['lastlogin']);
 			
 			array_push($matches, $NextMatch);
 		}
@@ -43,11 +45,32 @@ class MatchesModel extends CI_Model{
 	
 	// function to check if user is valid
 	public function CheckTestUserValidity($userId, $testId){
+		$this->load->model('users');
+		
+		$UserInfoArray = $this->users->GetUserInfoFromUserId($userId);
+		$TestInfoArray = $this->users->GetUserInfoFromUserId($testId);
 		
 		// check if user
 		if($testId == $userId){return 0;}
 		
 		
+		// check if user is frozen.
+		if($TestInfoArray['frozen'] != 'N'){return 0;}
+		
+		
+		// check if user is recently active
+		$ActiveThreshold = 14; // 2 week cut-off.
+		$LastActiveTime = $this->getActiveTime($TestInfoArray['lastLogin']);
+		//if($LastActiveTime > $ActiveThreshold){return 0;}
+		
+		// check if friend/blocked.
+		
+		
+		
+		// check if user has a dealbreaker interest.
+		
+		
+		// check if user is missing a required interest.
 		
 		
 		return 1;
@@ -61,28 +84,69 @@ class MatchesModel extends CI_Model{
 		$UserInfoArray = $this->users->GetUserInfoFromUserId($userId);
 		$TestInfoArray = $this->users->GetUserInfoFromUserId($testId);
 		
+		# Note: below is bad code. Will remove when proper db functions implemented.
+		// Interests (may want to change tag model to get user-specific interests)
+		//$query = $this->db->get('InterestsRelational');
+		//$IntRelational = $query->result_array();
 		
-		// Score = W1*DemographicScore+W2*PreferedInterestScore+W3*MatchingInterestScore+W4*InterestCatagoryScore+W5*ActivityScore+...
+		// Requirements/Preferences and Dealbreakers (may want to change tag model to get user-specific tags)
+		//$query = $this->db->get('TagsRelational');
+		//$TagRelational = $query->result_array();
+		# note: above is bad code. Will remove once proper db functions implemented.
+		
+		// Score = W1*DemographicScore+W2*PreferedInterestScore+W3*MatchingInterestScore+W4*SimilarInterestScore+W5*ActivityScore+...
 		$score = 0;
 
 		// Demographic Score: City, Gender, Age, etc.
-		$W1 = 1;
-		
 		$UAge = $this->getAge($UserInfoArray['dateOfBirth']);
 		$TAge = $this->getAge($TestInfoArray['dateOfBirth']);
+		$AgeScore = max(100 - pow(abs($UAge-$TAge),1.8),0); // Max 100
 		
-		$AgeScore = 100/(1+abs($UAge-$TAge));
+		$UGen = $UserInfoArray['gender'];
+		$TGen = $TestInfoArray['gender'];
+		$GenderScore = 0;
+		if ($UGen == $TGen) {$GenderScore = 10;} // Max 10
+		
+		$DemScore = $AgeScore + $GenderScore; //Max 110
+		
+		// Prefered Interest Score
 		
 		
 		
-		$score = $score + $W1*($AgeScore);
+		$PIScore = 0;
 		
-		// 
-		
-		
+		// Matching Interest Score
 		
 		
 		
+		
+		
+		
+		
+		
+		$MIScore = 0;
+		
+		// Similar Interest Score
+		
+		
+		$SIScore = 0;
+		
+		// Activity Score
+		
+		
+		
+		
+		$ActScore = 0;
+		
+		
+		// Total
+		$W1 = 1;
+		$W2 = 1;
+		$W3 = 1;
+		$W4 = 1;
+		$W5 = 1;
+		
+		$score = $score + $W1*$DemScore + $W2*$PIScore + $W3*$MIScore + $W4*$SIScore + $W5*$ActScore;
 		
 		return $score;
 	}
@@ -160,6 +224,25 @@ class MatchesModel extends CI_Model{
 		: (date("Y") - $birthDate[0]));
 
 		return $age;
+	}
+	
+	protected function getActiveTime($lastLogin){ // not sure what is going wrong here.
+		date_default_timezone_set('America/Toronto');
+		//$lastLogin = date_create($lastLogin);//explode("-", $lastLogin);
+		//$tdate = date_create();//time();
+		
+		$lastLogin = strtotime($lastLogin);
+		$tdate = time();
+		
+		//$LL_days = (date("md", date("U", mktime(0, 0, 0, $lastLogin[2], $lastLogin[1], $lastLogin[0]))) > date("md")
+		//? ((date("Y") - $lastLogin[0]) - 1)
+		//: (date("Y") - $lastLogin[0]));
+		
+		//$LL_days = date_diff($lastLogin, $tdate);
+		$LL_days = ($tdate-$lastLogin)/(60*60*24);
+		
+		return abs(round($LL_days));// / 86400));
+		//return $LL_days;
 	}
 
 }
