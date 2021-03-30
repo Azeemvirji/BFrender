@@ -53,6 +53,26 @@
 <br/>
 <br/>
 
+<?= form_open("Admin/AddLocation") ?>
+<?= form_label('City:', 'city'); ?> <br/>
+<?= form_input(array('name' => 'city',
+ 'id' => 'city',
+ 'value' => set_value('city',"") ));?> <br>
+ <?= form_label('Province:', 'province'); ?> <br/>
+ <?= form_input(array('name' => 'province',
+  'id' => 'province',
+  'value' => set_value('province',"") ));?> <br>
+  <?= form_label('Country:', 'country'); ?> <br/>
+  <?= form_input(array('name' => 'country',
+   'id' => 'country',
+   'value' => set_value('country',"") ));?> <br><br>
+<?= form_submit('submit', 'Submit'); ?>
+<?= form_reset('reset', 'Clear'); ?>
+<?= form_close() ?>
+
+<br/>
+<br/>
+
 <?= form_open("Admin/AddCategory") ?>
 <?= form_label('Category:', 'category'); ?> <br/>
 <?= form_input(array('name' => 'categoryName',

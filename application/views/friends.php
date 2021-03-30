@@ -1,4 +1,6 @@
 <div class = "container">
+	<? if(count($friends) > 0){ ?>
+	<h3>Friends</h3>
 	<? foreach($friends as $friend){ ?>
 <div class="row">
 	<div class="profile-head">
@@ -18,7 +20,7 @@
 										<div class="col-sm-6 col-xs-6">
 											<p><?= $friend['firstname'] ?> <?= $friend['lastname'] ?></p>
 											<p><?= $friend['age'] ?> yrs</p>
-											<p>Toronto</p>
+											<p><?= $friend['city'] ?></p>
 										</div>
 										 <div class="col-sm-6 col-xs-6">
 												<h5>7 Common Interest Including:</h5>
@@ -30,19 +32,87 @@
 					</div>
 				 <div class="col-md-1 col-sm-1 col-xs-3">
 					 <ul class="nav navbar-vertical navbar-right bg-danger">
-							<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/ViewProfile/view/<?= $friend['username'] ?>" title="Contacts">
+							<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/ViewProfile/view/<?= $friend['username'] ?>">
 								<span class="tooltp text-center"> Profile</span>
 									<span class="glyphicon glyphicon-user"></span>
 								</a></li>
-							<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/Message/chat/<?= $friend['username'] ?>" title="Chat">
+							<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/Message/chat/<?= $friend['username'] ?>">
 								<span class="tooltp text-center"> Connect</span>
 									<span class="glyphicon glyphicon-comment"></span>
 								</a></li>
+								<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/Friends/Remove/<?= $friend['username'] ?>">
+									<span class="tooltp text-center"> Remove</span>
+										<span class="glyphicon glyphicon-remove-circle"></span>
+									</a></li>
 						</ul>
 					</div>
 		</div>
 	</div><!--profile-head close-->
 	</div><!--row-close-->
+<? } ?>
+<? } ?>
+<? if(count($pending) > 0){ ?>
+<h3>Pending</h3>
+<? foreach($pending as $friend){ ?>
+<div class="row">
+<div class="profile-head">
+	<div class="profiles container thumbnail">
+		<div class="col-md-2 col-sm-3 col-xs-5">
+			<div class="row">
+				<img src="<?= assetUrl(); ?>img/users/<?= $friend['imageLocation'] ?>" class="img-responsive"/>
+
+			</div>
+		</div>
+			 <div class="col-md-9 col-sm-8 col-xs-9">
+				 <div class="row">
+								 <div class="col-sm-12"><h4><?= $friend['username'] ?></h4>
+								 <hr>
+								 </div>
+
+									<div class="col-sm-6 col-xs-6">
+										<p><?= $friend['firstname'] ?> <?= $friend['lastname'] ?></p>
+										<p><?= $friend['age'] ?> yrs</p>
+										<p><?= $friend['city'] ?></p>
+									</div>
+									 <div class="col-sm-6 col-xs-6">
+											<h5>7 Common Interest Including:</h5>
+											<p><span>Craft Beers</span><span> Hockey </span><span> Camping </span></p>
+											<h5>Suggested Activity:</h5>
+											<p>Hiking</p>
+									</div>
+					</div>
+				</div>
+			 <div class="col-md-1 col-sm-1 col-xs-3">
+				 <ul class="nav navbar-vertical navbar-right bg-danger">
+						<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/ViewProfile/view/<?= $friend['username'] ?>">
+							<span class="tooltp text-center"> Profile</span>
+								<span class="glyphicon glyphicon-user"></span>
+							</a></li>
+						<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/Message/chat/<?= $friend['username'] ?>">
+							<span class="tooltp text-center"> Connect</span>
+								<span class="glyphicon glyphicon-comment"></span>
+							</a></li>
+							<? if($friend['sentBy'] == $_SESSION['username']){ ?>
+							<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/Friends/Remove/<?= $friend['username'] ?>">
+								<span class="tooltp text-center"> Cancel Pending</span>
+									<span class="glyphicon glyphicon-remove-circle"></span>
+								</a></li>
+							<? }else{ ?>
+								<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/Friends/Confirm/<?= $friend['username'] ?>">
+									<span class="tooltp text-center"> Accept</span>
+										<span class="glyphicon glyphicon-plus"></span>
+									</a></li>
+								<li><a class="lnk_usr text-dgr-link" href="<?= base_url(); ?>index.php?/Friends/Remove/<?= $friend['username'] ?>">
+									<span class="tooltp text-center"> Decline</span>
+										<span class="glyphicon glyphicon-remove-circle"></span>
+									</a></li>
+							<? } ?>
+					</ul>
+				</div>
+	</div>
+</div><!--profile-head close-->
+</div><!--row-close-->
+<? } ?>
 <? } ?>
 </div>
 <style>

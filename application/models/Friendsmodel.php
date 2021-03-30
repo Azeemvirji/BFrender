@@ -4,12 +4,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Friendsmodel extends CI_Model{
   protected $table = 'friends';
 
-  public function AddFriends($userId, $friendId){
-    $data = array('userId' => $userId,
-                  'friendId' => $friendId
-                );
+  public function AddFriends($userId, $friendId, $status){
+    $check = $this->CheckIfInFriendsTable($userId, $friendId);
 
-    $this->db->insert($this->table, $data);
+    if($check == "false" or $check == "seen"){
+      $data = array('userId' => $userId,
+                    'friendId' => $friendId,
+                    'status' => $status
+                  );
+
+      $this->db->insert($this->table, $data);
+    }else if($check == "removed" or $check == "pending"){
+      $friendsId = $this->GetFriendsId($userId, $friendId);
+
+      $this->db->set('status', $status);
+      $this->db->where('friendsId', $friendsId);
+      $this->db->update($this->table);
+    }
+  }
+
+  public function RemoveFriend($userId, $friendId){
+    $friendsId = $this->GetFriendsId($userId, $friendId);
+
+    $this->db->set('status', "removed");
+    $this->db->where('friendsId', $friendsId);
+    $this->db->update($this->table);
   }
 
   public function GetFriendsId($userId, $friendId){
@@ -30,7 +49,15 @@ class Friendsmodel extends CI_Model{
 
   }
 
-  public function GetFriendsForUser($userId){
+  public function RequestSentBy($friendsId){
+    $this->db->where('friendsId', $friendsId);
+    $query = $this->db->get($this->table);
+    $record = $query->result_array();
+
+    return $record[0]['userId'];
+  }
+
+  public function GetFriendsForUser($userId, $status){
     $this->load->model('users');
 
     $friends = [];
@@ -42,60 +69,48 @@ class Friendsmodel extends CI_Model{
 	// , # of common interests, a list of (some) common interests, and a suggested activity ~ Peter
 
     foreach($relationships as $relation){
-		$nextID = '';
-		$NextFriend = [];
       if($relation['userId'] == $userId){
-		  $nextID = 'friendId';
-        //array_push($friends, $this->users->GetUserInfoFromUserId($relation['friendId']));
+        if($relation['status'] == $status){
+          array_push($friends, $this->users->GetUserInfoFromUserId($relation['friendId']));
+        }
       }else if($relation['friendId'] == $userId){
-		  $nextID = 'userId';
-        //array_push($friends, $this->users->GetUserInfoFromUserId($relation['userId']));
+        if($relation['status'] == $status){
+          array_push($friends, $this->users->GetUserInfoFromUserId($relation['userId']));
+        }
       }
-	  if($nextID != ''){
-		  $UserInfoArray = $this->users->GetUserInfoFromUserId($relation[$nextID]);
-
-		  #names
-		  $NextFriend['username'] = $UserInfoArray['username'];
-		  $NextFriend['firstname'] = $UserInfoArray['firstname'];
-		  $NextFriend['lastname'] = $UserInfoArray['lastname'];
-
-		  #image
-		  $NextFriend['imageLocation'] = $UserInfoArray['imageLocation'];
-
-		  #age
-		  $age = $this->getAge($UserInfoArray['dateOfBirth']);
-		  $NextFriend['age'] = $age;
-
-		  #city
-		  $NextFriend['city'] = 'Toronto'; #todo: get relevant db
-
-		  #Common Interests (?) todo: add a count, and list some interests.
-		  $NextFriend['InterestCount'] = 3;
-
-		  #$NextFriend['CommonInterest'] = 'Test' #May try to turn this into an array.
-
-
-		  #Suggested Activity
-		  $NextFriend['ActivitySuggestion'] = 'Hiking'; #todo: make algorithm
-
-
-		  array_push($friends, $NextFriend);#$this->users->GetUserInfoFromUserId($relation[$nextID]));
-	  }
     }
 
     return $friends;
   }
 
-	protected function getAge($birthDate){
-		date_default_timezone_set('America/Toronto');
-		$birthDate = explode("-", $birthDate);
-		$tdate = time();
+  public function GetFriendsRecords($userId){
+    $this->load->model('users');
 
-		$age = (date("md", date("U", mktime(0, 0, 0, $birthDate[2], $birthDate[1], $birthDate[0]))) > date("md")
-		? ((date("Y") - $birthDate[0]) - 1)
-		: (date("Y") - $birthDate[0]));
+    $friends = [];
 
-		return $age;
+    $query = $this->db->get($this->table);
+    $relationships = $query->result_array();
+
+    foreach($relationships as $relation){
+      if($relation['userId'] == $userId){
+        array_push($friends, $relation);
+      }else if($relation['friendId'] == $userId){
+        array_push($friends, $relation);
+      }
+    }
+
+    return $friends;
+  }
+
+  public function CheckIfInFriendsTable($userId, $friendId){
+    $friends = $this->GetFriendsRecords($userId);
+
+    foreach ($friends as $friend) {
+      if($friend['userId'] == $friendId or $friend['friendId'] == $friendId){
+        return $friend['status'];
+      }
+    }
+    return "false";
   }
 
 }

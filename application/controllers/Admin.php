@@ -13,6 +13,7 @@ class Admin extends CI_Controller {
 
     $this->load->model('tags');
     $this->load->model('category');
+    $this->load->model('location');
 
    $_SESSION['page'] = 'admin';
    $this->TPL['loggedin'] = $this->userauth->loggedin();
@@ -42,9 +43,25 @@ class Admin extends CI_Controller {
 	$this->display();
   }
 
+  public function AddLocation(){
+    $this->locationValidation();
+
+    if($this->form_validation->run()){
+      $this->location->AddLocation($this->input->post("city"), $this->input->post("province"), $this->input->post("country"));
+    }
+
+    $this->display();
+  }
+
+  public function locationValidation(){
+    $this->load->library('form_validation');
+    
+    $this->form_validation->set_message('is_unique', 'This city is already in the database.');
+    $this->form_validation->set_rules('city', 'City', 'required|is_unique[location.city]');
+  }
+
   public function AddCategory(){
     $this->categoryValidation();
-    $this->load->model('tags');
     if($this->form_validation->run()){
       $this->tags->AddCategory($this->input->post("categoryName"));
     }

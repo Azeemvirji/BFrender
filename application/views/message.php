@@ -1,10 +1,5 @@
 <div class="chat_window">
   <div class="top_menu">
-      <div class="buttons">
-          <div class="button close"></div>
-          <div class="button minimize"></div>
-          <div class="button maximize"></div>
-      </div>
       <div class="title">Chatting with <?= $chatUname ?></div>
   </div>
   <ul class="messages" id="messages">
@@ -19,10 +14,13 @@
       </div>
   </div>
 </div>
+
 <script>
 
 var activeFriend = "<?= $chatUname ?>";
 var input = document.getElementById("messageInput");
+var lastReceived = 0;
+var oldReceived = 0;
 
 input.addEventListener("keyup", function(event){
 
@@ -46,6 +44,27 @@ function getAllMessages(){
    });
 }
 getAllMessages();
+getLastReceived(false);
+function getLastReceived(input){
+  var url = "<?= base_url() ?>index.php?/Message/GetLastReceived";
+  $.ajax({
+    type:'POST',
+    data:{
+    friend: activeFriend},
+    url:url,
+    success: function(result){
+      if(input){
+        if(lastReceived < result){
+          updateMessages(lastReceived);
+          lastReceived = result;
+        }
+      }else{
+        lastReceived = result;
+      }
+    }
+  });
+}
+
 function sendMessage(){
  var msg = $("#messageInput").val();
  $("#messageInput").val("");
@@ -57,14 +76,38 @@ function sendMessage(){
    friend: activeFriend},
    url:url,
    success: function(result){
-     $("#messages").append("<li class=\"message right appeared\"><div class=\"text_wrapper\"><div class=\"text\">" + result + "</div></div></li>");
+     $("#messages").append(result);
      $("#messages").scrollTop($("#messages")[0].scrollHeight);
    }
  });
 
 }
+
+function updateMessages(count){
+  var url = "<?= base_url() ?>index.php?/Message/GetNewMessages";
+  $.ajax({
+    type:'POST',
+    data:{lastReceived: count,
+    friend: activeFriend},
+    url:url,
+    success: function(result){
+      $("#messages").append(result);
+      $("#messages").scrollTop($("#messages")[0].scrollHeight);
+    }
+  });
+}
+
+setInterval(function(){
+  getLastReceived(true);
+}, 2000);
+
 setTimeout(function(){
   $("#messages").scrollTop($("#messages")[0].scrollHeight);
 }, 500);
 </script>
+<style>
+.date{
+  float:right;
+}
+</style>
 <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/messages.css">

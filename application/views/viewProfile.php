@@ -1,6 +1,6 @@
 <div class="container emp-profile">
             <center id="msg"><?= $msg ?></center>
-            <form method="post" action="<?= base_url(); ?>index.php?/Edit">
+
                 <div class="row">
                     <div class="col-md-4">
                         <div class="profile-img">
@@ -20,7 +20,21 @@
                     </div>
 
                     <div class="col-md-2">
-
+                      <? if($friends == "false" or $friends == "seen" or $friends == "removed"){ ?>
+                        <form method="post" action="<?= base_url(); ?>index.php?/Friends/Add/<?= $user['username'] ?>">
+                        <button class="profile-edit-btn" name="btnAddMore">Add<button>
+                      <? }else if($friends == "pending"){ ?>
+                        <? if($sentBy == $_SESSION['username']){ ?>
+                          <form method="post" action="<?= base_url(); ?>index.php?/Friends/Remove/<?= $user['username'] ?>">
+                          <button class="profile-edit-btn" name="btnAddMore">Cancel Pending<button>
+                        <? }else{ ?>
+                          <form method="post" action="<?= base_url(); ?>index.php?/Friends/Confirm/<?= $user['username'] ?>">
+                          <button class="profile-edit-btn" name="btnAddMore">Accept<button>
+                        <? } ?>
+                      <? }else if($friends == "accepted"){ ?>
+                        <form method="post" action="<?= base_url(); ?>index.php?/Friends/Remove/<?= $user['username'] ?>">
+                        <button class="profile-edit-btn" name="btnAddMore">Remove<button>
+                      <? } ?>
                     </div>
 
                     <div class="col-md-8">
@@ -86,3 +100,6 @@
             </form>
         </div>
          <link rel="stylesheet" type="text/css" href="<?= assetUrl(); ?>css/profile.css">
+<script>
+
+</script>
