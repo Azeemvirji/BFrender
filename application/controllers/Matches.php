@@ -11,28 +11,28 @@ class Matches extends CI_Controller {
     parent::__construct();
     // Your own constructor code
     $this->load->model('users');
-	$this->load->model('MatchesModel');
+    $this->load->model('MatchesModel');
 
     date_default_timezone_set('America/Toronto');
-   $_SESSION['page'] = 'matches';
-   $this->TPL['loggedin'] = $this->userauth->loggedin();
+    $_SESSION['page'] = 'matches';
+    $this->TPL['loggedin'] = $this->userauth->loggedin();
   }
 
-	public function index(){
-      $this->display();
-    }
+  public function index(){
+    $this->display();
+  }
 
 	protected function display(){
-      $this->getUserInfo();
+    $this->getUserInfo();
 	  $this->matchesRanked = $this->GetUserRankedMatches($this->userinfo['userId']); // The Matching algorithm
 	  $this->TPL['matches'] = $this->GetMatchesForUser($this->userinfo['userId'], $this->matchesRanked);
-      $this->template->show('matches', $this->TPL);
-    }
+    $this->template->show('matches', $this->TPL);
+  }
 
-	 protected function getUserInfo(){
-      $this->userinfo = $this->users->GetUserInfoFromUsername($_SESSION['username']);
-      $this->TPL['user'] = $this->userinfo;
-    }
+  protected function getUserInfo(){
+    $this->userinfo = $this->users->GetUserInfoFromUsername($_SESSION['username']);
+    $this->TPL['user'] = $this->userinfo;
+  }
 
 	// take the userID, and a ranked list of matchIds, and returns data to populate the view.
 	public function GetMatchesForUser($userId, $matchIds){
@@ -55,7 +55,6 @@ class Matches extends CI_Controller {
 			#names
 			$NextMatch['firstname'] = $UserInfoArray['firstname'];
 			$NextMatch['lastname'] = $UserInfoArray['lastname'];
-      $NextMatch['username'] = $UserInfoArray['username'];
 
 			#image
 			$NextMatch['imageLocation'] = $UserInfoArray['imageLocation'];
@@ -77,9 +76,12 @@ class Matches extends CI_Controller {
 	// function to check if user is valid
 	public function CheckTestUserValidity($userId, $testId){
 		$this->load->model('users');
+    $this->load->model('MatchesModel');
 
 		$UserInfoArray = $this->users->GetUserInfoFromUserId($userId);
 		$TestInfoArray = $this->users->GetUserInfoFromUserId($testId);
+
+    $TestInterests =  $this->MatchesModel->GetUserInterests($testId)
 
 		// check if user
 		if($testId == $userId){return 0;}
@@ -96,15 +98,15 @@ class Matches extends CI_Controller {
 
 		// check if friend/blocked.
 
-
-
 		// check if user has a dealbreaker interest.
-
+    $dealbreakers = $this->MatchesModel->GetUserMatchOptions($userId, 'dealbreaker');
+    foreach ($dealbreakers as $db){if (in_array($db,$TestInterests) == 1){return 0;}}
 
 		// check if user is missing a required interest.
+    $requirements = $this->MatchesModel->GetUserMatchOptions($userId, 'requirements');
+    foreach ($requirements as $required){if (in_array($required,$TestInterests) == 0){return 0;}}
 
-
-		return 1;
+    return 1;
 	}
 
 	// function to score match
@@ -115,15 +117,11 @@ class Matches extends CI_Controller {
 		$UserInfoArray = $this->users->GetUserInfoFromUserId($userId);
 		$TestInfoArray = $this->users->GetUserInfoFromUserId($testId);
 
-		# Note: below is bad code. Will remove when proper db functions implemented.
-		// Interests (may want to change tag model to get user-specific interests)
-		//$query = $this->db->get('InterestsRelational');
-		//$IntRelational = $query->result_array();
+    $UserInterests =  $this->MatchesModel->GetUserInterests($userId);
+    $TestInterests =  $this->MatchesModel->GetUserInterests($testId);
 
-		// Requirements/Preferences and Dealbreakers (may want to change tag model to get user-specific tags)
-		//$query = $this->db->get('TagsRelational');
-		//$TagRelational = $query->result_array();
-		# note: above is bad code. Will remove once proper db functions implemented.
+    $UserPreferedList = $this->MatchesModel->GetUserMatchOptions($userId, 'preferences');
+    $UserRequiredList = $this->MatchesModel->GetUserMatchOptions($userId, 'requirements'); // technically also preferences
 
 		// Score = W1*DemographicScore+W2*PreferedInterestScore+W3*MatchingInterestScore+W4*SimilarInterestScore+W5*ActivityScore+...
 		$score = 0;
@@ -141,23 +139,37 @@ class Matches extends CI_Controller {
 		$DemScore = $AgeScore + $GenderScore; //Max 110
 
 		// Prefered Interest Score
+    $PrefCount = count($UserPreferedList);
+    $ReqCount = count($UserRequiredList);
+    $PRcount = $PrefCount + $ReqCount;
+    $PRMatch = 0;
+    $PIScoreA = 0;
+    if ($PRcount != 0){
+        foreach ($UserPreferedList as $UserPref){if (in_array($UserPref,$TestInterests) == 1){$PRMatch += 1;}}
+        foreach ($UserRequiredList as $UserReq){if (in_array($UserReq,$TestInterests) == 1){$PRMatch += 1;}}
+        $PIScoreA = $PRMatch/$PRcount*100; //Max 100
+    }
 
-
-
-		$PIScore = 0;
+    // may look like bloat. I have these variables seperate to allow for future potential nuance.
+		$PIScore = $PIScoreA;
 
 		// Matching Interest Score
+    $UserIntCount = count($UserInterests);
+    $TestIntCount = count($TestInterests);
+    $AvIntCount = ($UserIntCount + $TestIntCount)/2;
+    $MICount = 0;
+    foreach ($UserInterests as $UserI){if (in_array($UserI,$TestInterests) == 1){$MICount += 1;}}
 
+    $IdealInterestCount = 20; // To prevent someone spamming interests for matches
+    if ($AvIntCount > $IdealInterestCount){
+        $MICount = $MICount * (1 - $IdealInterestCount/$AvIntCount);
+    }
 
-
-
-
-
-
-
-		$MIScore = 0;
+		$MIScore = $MICount;
 
 		// Similar Interest Score
+    // This checks for interests that users have which are in the same catagory
+    // and while not as valuable as direct matches, they show commonalities.
 
 
 		$SIScore = 0;
@@ -173,11 +185,11 @@ class Matches extends CI_Controller {
 		// Total
 		$W1 = 1;
 		$W2 = 1;
-		$W3 = 1;
+		$W3 = 25; // Higher to offset lower value
 		$W4 = 1;
 		$W5 = 1;
 
-		$score = $score + $W1*$DemScore + $W2*$PIScore + $W3*$MIScore + $W4*$SIScore + $W5*$ActScore;
+		$score = $W1*$DemScore + $W2*$PIScore + $W3*$MIScore + $W4*$SIScore + $W5*$ActScore;
 
 		return $score;
 	}
