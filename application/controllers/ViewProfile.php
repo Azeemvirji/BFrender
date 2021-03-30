@@ -15,6 +15,7 @@ class ViewProfile extends CI_Controller {
     $this->load->model('tags');
     $this->load->model('users');
     $this->load->model('category');
+    $this->load->model('friendsmodel');
 
     date_default_timezone_set('America/Toronto');
     $_SESSION['page'] = 'viewprofile';
@@ -30,9 +31,16 @@ class ViewProfile extends CI_Controller {
     $this->display($friend);
   }
 
+
+
   protected function display($username){
     $this->getUserInfo($username);
     $this->TPL['userTags'] = $this->GetTagsForUser($this->userinfo['userId'], "InterestRelational");
+    $userId = $this->users->GetUserID($_SESSION['username']);
+    $this->TPL['friends'] = $this->friendsmodel->CheckIfInFriendsTable($userId, $this->userinfo['userId']);
+
+    $friendsId = $this->friendsmodel->GetFriendsId($userId, $this->userinfo['userId']);
+    $this->TPL['sentBy'] = $this->users->GetUsernameFromUserId($this->friendsmodel->RequestSentBy($friendsId));
 
     $this->template->show('viewProfile', $this->TPL);
   }

@@ -11,6 +11,7 @@ class Edit extends CI_Controller {
     parent::__construct();
     // Your own constructor code
     $this->load->model('users');
+    $this->load->model('location');
    $this->TPL['loggedin'] = $this->userauth->loggedin();
    $this->setActive('home');
   }
@@ -20,7 +21,31 @@ class Edit extends CI_Controller {
     $this->currentUser = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     $this->TPL['user'] = $this->currentUser;
     $this->TPL['user']['bio'] = trim($this->users->GetUserBio($this->currentUser['userId']));
+    $location = $this->location->GetLocationById($this->users->GetUserLocation($this->currentUser['userId']));
+    $this->TPL['user']['location'] = $location;
+    $countries = $this->location->GetCountries();
+    $this->TPL['countries'] = $countries;
+    $provinces = $this->location->GetProvinceForCountry($countries[0]['country']);
+    $this->TPL['provinces'] = $provinces;
+    $province = $provinces[0]['province'];
+    if($location['province'] != ""){
+      $province = $location['province'];
+    }
+    $this->TPL['cities'] = $this->location->GetCitiesForProvince($province);
+
     $this->template->show('edit', $this->TPL);
+  }
+
+  public function GetCities(){
+    $province = $this->input->post('province');
+
+    $cities = $this->location->GetCitiesForProvince($province);
+
+    foreach($cities as $city){
+      $output = "<option value=\"" . $city['locationId'] . "\">" . $city['city'] . "</option>";
+
+      echo $output;
+    }
   }
 
   public function Submit(){
@@ -37,7 +62,7 @@ class Edit extends CI_Controller {
     $this->db->where('username', $_SESSION['username']);
     $query = $this->db->update('users', $data);
 
-    $this->users->UpdateBio($_SESSION['username'], $this->input->post("bio"));
+    $this->users->UpdateBioAndLocation($_SESSION['username'], $this->input->post("bio"), $this->input->post("city"));
 
     $this->TPL['user'] = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     header("Location: ". base_url() . "index.php/Profile");

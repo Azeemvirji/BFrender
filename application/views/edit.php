@@ -4,7 +4,7 @@
     	<div class="col-sm-2"><a href="/users" class="pull-right"><img class="img-circle img-responsive" ></a></div>
     </div>
     <div class="row">
-      <form class="form" action="<?= base_url() ?>index.php?/Edit/Submit/" method="post" id="registrationForm" enctype="multipart/form-data">
+      <form class="form" action="<?= base_url() ?>index.php?/Edit/Submit/" method="post" id="registrationForm1" enctype="multipart/form-data">
   		<div class="col-sm-3"><!--left col-->
           <img src="<?= assetUrl(); ?>img/users/<?= $user['imageLocation'] ?>" style="width:70%" alt="no picture uploaded"/>
           <label for="pic"><h4>Upload a different photo</h4></label>
@@ -62,6 +62,39 @@
                         </div>
                       </div>
                       <div class="form-group">
+
+                          <div class="col-xs-6">
+                            <label for="country"><h4>Country</h4></label><br/>
+                            <select id="country" name="country" class="col-xs-12">
+                              <? foreach($countries as $row){ ?>
+                                <option value="<?= $row['country'] ?>"><?= $row['country'] ?></option>
+                              <? } ?>
+                            </select><br/>
+                          </div>
+                      </div>
+                      <div class="form-group">
+
+                          <div class="col-xs-6">
+                            <label for="province"><h4>Province</h4></label><br/>
+                            <select id="province" name="province" class="col-xs-12">
+                              <? foreach($provinces as $row){ ?>
+                                <option <? if($user['location']['province'] == $row['province']){ echo "selected";} ?> value="<?= $row['province'] ?>"><?= $row['province'] ?></option>
+                              <? } ?>
+                            </select><br/>
+                          </div>
+                      </div>
+                      <div class="form-group">
+
+                          <div class="col-xs-6">
+                            <label for="city"><h4>City</h4></label><br/>
+                            <select id="city" name="city" class="col-xs-12">
+                              <? foreach($cities as $row){ ?>
+                                <option <? if($user['location']['city'] == $row['city']){ echo "selected";} ?> value="<?= $row['locationId'] ?>"><?= $row['city'] ?></option>
+                              <? } ?>
+                            </select><br/>
+                          </div>
+                      </div>
+                      <div class="form-group">
                            <div class="col-xs-12">
                                 <br>
                               	<button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
@@ -76,7 +109,7 @@
              <div class="tab-pane <?= $password ?>" id="password">
 
                <hr>
-                  <form class="form" action="<?= base_url() ?>index.php?/Edit/ResetPassword/" method="post" id="registrationForm">
+                  <form class="form" action="<?= base_url() ?>index.php?/Edit/ResetPassword/" method="post" id="registrationForm2">
                       <div class="form-group">
 
                           <div class="col-xs-12">
@@ -117,3 +150,23 @@
 
         </div><!--/col-9-->
     </div><!--/row-->
+
+<script>
+  $("#province").change(function(){
+    var province = $("#province").val();
+    $("#city").empty();
+
+    var url = "<?= base_url() ?>index.php?/Edit/GetCities";
+    $.ajax({
+      type:'POST',
+      data:{province: province},
+      url:url,
+      success: function(result){
+        $("#city").append(result);
+      }
+    });
+
+    //var option = "<option value=\"" + province + "\">" + province + "</option>";
+    //$("#city").append(option);
+  });
+</script>
