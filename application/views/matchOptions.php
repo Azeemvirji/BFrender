@@ -15,7 +15,7 @@
              <h4 class="panel-title">Requirements</h4>
            </div>
            <div class="panel-body">
-             <div class="requirements tag-container" id="requirements">
+             <div class="requirements tag-container" id="requirements" style="min-height:50px">
                <?php foreach ($requirements as $row): ?>
                  <div class="list-item" draggable="true" id="<?= $row ?>"><?= $row ?></div>
                <?php endforeach; ?>
@@ -29,7 +29,7 @@
            <h4 class="panel-title">Preferences</h4>
            </div>
            <div class="panel-body">
-             <div class="preferences tag-container" id="preferences">
+             <div class="preferences tag-container" id="preferences" style="min-height:50px">
                <?php foreach ($preferences as $row): ?>
                  <div class="list-item" draggable="true" id="<?= $row ?>"><?= $row ?></div>
                <?php endforeach; ?>
@@ -43,7 +43,7 @@
            <h4 class="panel-title" style="">DealBreaker</h4>
            </div>
            <div class="panel-body">
-             <div class="dealbreaker tag-container" id="dealbreaker">
+             <div class="dealbreaker tag-container" id="dealbreaker" style="min-height:50px">
                <?php foreach ($dealbreaker as $row): ?>
                  <div class="list-item" draggable="true" id="<?= $row ?>"><?= $row ?></div>
                <?php endforeach; ?>

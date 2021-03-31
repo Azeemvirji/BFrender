@@ -16,6 +16,7 @@ class ViewProfile extends CI_Controller {
     $this->load->model('users');
     $this->load->model('category');
     $this->load->model('friendsmodel');
+    $this->load->model('location');
 
     date_default_timezone_set('America/Toronto');
     $_SESSION['page'] = 'viewprofile';
@@ -71,6 +72,7 @@ class ViewProfile extends CI_Controller {
     $this->userinfo = $this->users->GetUserInfoFromUsername($username);
     $this->TPL['user'] = $this->userinfo;
     $this->TPL['user']['bio'] = $this->users->GetUserBio($this->userinfo['userId']);
+    $this->TPL['user']['location'] = $this->location->GetLocationById($this->users->GetUserLocation($this->userinfo['userId']));
     $this->TPL['user']['age'] = $this->getAge($this->userinfo['dateOfBirth']);
   }
 

@@ -23,10 +23,16 @@
 											<p><?= $friend['city'] ?></p>
 										</div>
 										 <div class="col-sm-6 col-xs-6">
-												<h5>7 Common Interest Including:</h5>
-												<p><span>Craft Beers</span><span> Hockey </span><span> Camping </span></p>
+											 <? if ($friend['InterestCount'] > 0){ ?>
+												<h5><?= $friend['InterestCount'] ?> Common Interest Including:</h5>
+												<p><? foreach ($friend['CommonInterest'] as $value) { ?>
+													<span><?= $value ?></span>,
+												<? } ?></p>
+												<? } ?>
+												<? if($friend['ActivitySuggestion'] != ""){ ?>
 												<h5>Suggested Activity:</h5>
-												<p>Hiking</p>
+												<p><?= $friend['ActivitySuggestion'] ?></p>
+												<? } ?>
 										</div>
 						</div>
 					</div>
@@ -74,12 +80,18 @@
 										<p><?= $friend['age'] ?> yrs</p>
 										<p><?= $friend['city'] ?></p>
 									</div>
-									 <div class="col-sm-6 col-xs-6">
-											<h5>7 Common Interest Including:</h5>
-											<p><span>Craft Beers</span><span> Hockey </span><span> Camping </span></p>
-											<h5>Suggested Activity:</h5>
-											<p>Hiking</p>
-									</div>
+									<div class="col-sm-6 col-xs-6">
+										<? if ($friend['InterestCount'] > 0){ ?>
+										 <h5><?= $friend['InterestCount'] ?> Common Interest Including:</h5>
+										 <p><? foreach ($friend['CommonInterest'] as $value) { ?>
+											 <span><?= $value ?></span>
+										 <? } ?></p>
+										 <? } ?>
+										 <? if($friend['ActivitySuggestion'] != ""){ ?>
+										 <h5>Suggested Activity:</h5>
+										 <p><?= $friend['ActivitySuggestion'] ?></p>
+										 <? } ?>
+								 </div>
 					</div>
 				</div>
 			 <div class="col-md-1 col-sm-1 col-xs-3">

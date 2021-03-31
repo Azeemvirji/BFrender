@@ -75,13 +75,32 @@ class Users extends CI_Model{
     return $users[0]['location'];
   }
 
+  public function CheckIfUserDetailsExist($userId){
+    $this->db->where('userId', $userId);
+    $query = $this->db->get('userDetails');
+    $users = $query->result_array();
+
+    return count($users) ;
+  }
+
   public function UpdateBioAndLocation($username, $bio, $location){
     $userId = $this->GetUserID($username);
 
-    $this->db->set('bio', $bio);
-    $this->db->set('location', $location);
-    $this->db->where('userId', $userId);
-    $this->db->update('userDetails');
+    $check = $this->CheckIfUserDetailsExist($userId);
+
+    if($check){
+      $this->db->set('bio', $bio);
+      $this->db->set('location', $location);
+      $this->db->where('userId', $userId);
+      $this->db->update('userDetails');
+    }else{
+      $data = array(
+        'userId' => $userId,
+        'bio' => $bio,
+        'location' => $location
+      );
+      $this->db->insert('userDetails', $data);
+    }
   }
 }
 

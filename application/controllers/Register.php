@@ -33,7 +33,7 @@ class Register extends CI_Controller {
       $data = array(
         'username' => $uname,
         'email' => $email,
-        'password' => $this->input->post("password"),
+        'password' => password_hash($this->input->post("password"), PASSWORD_DEFAULT),
         'dateOfBirth' => $date,
         'accessLevel' => "member",
         'frozen' => 'N',

@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 // A series of functions to get interests, tag preferences/dealbreakers, and catagories from the database the purpose of matching.
 // Note, there are likely duplicate functions.
-class MatchesModel extends CI_Model{
+class Matchesmodel extends CI_Model{
 
 
 	// function to get list of interests for a userid (from the relational table)

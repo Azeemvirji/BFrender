@@ -64,17 +64,6 @@
                       <div class="form-group">
 
                           <div class="col-xs-6">
-                            <label for="country"><h4>Country</h4></label><br/>
-                            <select id="country" name="country" class="col-xs-12">
-                              <? foreach($countries as $row){ ?>
-                                <option value="<?= $row['country'] ?>"><?= $row['country'] ?></option>
-                              <? } ?>
-                            </select><br/>
-                          </div>
-                      </div>
-                      <div class="form-group">
-
-                          <div class="col-xs-6">
                             <label for="province"><h4>Province</h4></label><br/>
                             <select id="province" name="province" class="col-xs-12">
                               <? foreach($provinces as $row){ ?>

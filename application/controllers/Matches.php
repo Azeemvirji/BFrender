@@ -11,7 +11,9 @@ class Matches extends CI_Controller {
     parent::__construct();
     // Your own constructor code
     $this->load->model('users');
-    $this->load->model('MatchesModel');
+    $this->load->model('matchesmodel');
+    $this->load->model('location');
+    $this->load->model('tags');
 
     date_default_timezone_set('America/Toronto');
     $_SESSION['page'] = 'matches';
@@ -38,7 +40,7 @@ class Matches extends CI_Controller {
 	public function GetMatchesForUser($userId, $matchIds){
 		$this->load->model('users');
 
-
+    $userInterests = $this->GetInterestsForUser($userId);
 		$matches = [];
 
 		//
@@ -55,6 +57,7 @@ class Matches extends CI_Controller {
 			#names
 			$NextMatch['firstname'] = $UserInfoArray['firstname'];
 			$NextMatch['lastname'] = $UserInfoArray['lastname'];
+      $NextMatch['username'] = $UserInfoArray['username'];
 
 			#image
 			$NextMatch['imageLocation'] = $UserInfoArray['imageLocation'];
@@ -62,6 +65,15 @@ class Matches extends CI_Controller {
 			#age
 			$age = $this->getAge($UserInfoArray['dateOfBirth']);
 			$NextMatch['age'] = $age;
+
+      $location = $this->location->GetLocationById($this->users->GetUserLocation($UserInfoArray['userId']));
+      $NextMatch['city'] = $location['city'];
+
+      $commonInterest = $this->GetCommonInterests($userInterests, $UserInfoArray['userId']);
+      $NextMatch['CommonInterest'] = $commonInterest;
+      $NextMatch['InterestCount'] = count($commonInterest);
+
+      $NextMatch['ActivitySuggestion'] = ''; #todo: make algorithm
 
 			#last active
 			$NextMatch['lastlogin'] = $this->getActiveTime($UserInfoArray['lastlogin']);
@@ -73,15 +85,36 @@ class Matches extends CI_Controller {
 		return $matches;
 	}
 
+  protected function GetCommonInterests($userInterests, $friendId){
+    $friendsInterests = $this->GetInterestsForUser($friendId);
+    $common = [];
+
+    foreach ($userInterests as $interest) {
+      if(in_array($interest, $friendsInterests)){
+        array_push($common, $interest);
+      }
+    }
+
+    return $common;
+  }
+
+  protected function GetInterestsForUser($userId) {
+    $tagsId = $this->tags->GetUserTags($userId, "InterestRelational");
+    $tags = [];
+
+    foreach ($tagsId as $row) {
+      array_push($tags, $this->tags->GetTagName($row['tagId']));
+    }
+
+    return $tags;
+  }
+
 	// function to check if user is valid
 	public function CheckTestUserValidity($userId, $testId){
-		$this->load->model('users');
-    $this->load->model('MatchesModel');
-
 		$UserInfoArray = $this->users->GetUserInfoFromUserId($userId);
 		$TestInfoArray = $this->users->GetUserInfoFromUserId($testId);
 
-    $TestInterests =  $this->MatchesModel->GetUserInterests($testId)
+    $TestInterests =  $this->matchesmodel->GetUserInterests($testId);
 
 		// check if user
 		if($testId == $userId){return 0;}
@@ -99,11 +132,11 @@ class Matches extends CI_Controller {
 		// check if friend/blocked.
 
 		// check if user has a dealbreaker interest.
-    $dealbreakers = $this->MatchesModel->GetUserMatchOptions($userId, 'dealbreaker');
+    $dealbreakers = $this->matchesmodel->GetUserMatchOptions($userId, 'dealbreaker');
     foreach ($dealbreakers as $db){if (in_array($db,$TestInterests) == 1){return 0;}}
 
 		// check if user is missing a required interest.
-    $requirements = $this->MatchesModel->GetUserMatchOptions($userId, 'requirements');
+    $requirements = $this->matchesmodel->GetUserMatchOptions($userId, 'requirements');
     foreach ($requirements as $required){if (in_array($required,$TestInterests) == 0){return 0;}}
 
     return 1;
@@ -117,11 +150,11 @@ class Matches extends CI_Controller {
 		$UserInfoArray = $this->users->GetUserInfoFromUserId($userId);
 		$TestInfoArray = $this->users->GetUserInfoFromUserId($testId);
 
-    $UserInterests =  $this->MatchesModel->GetUserInterests($userId);
-    $TestInterests =  $this->MatchesModel->GetUserInterests($testId);
+    $UserInterests =  $this->matchesmodel->GetUserInterests($userId);
+    $TestInterests =  $this->matchesmodel->GetUserInterests($testId);
 
-    $UserPreferedList = $this->MatchesModel->GetUserMatchOptions($userId, 'preferences');
-    $UserRequiredList = $this->MatchesModel->GetUserMatchOptions($userId, 'requirements'); // technically also preferences
+    $UserPreferedList = $this->matchesmodel->GetUserMatchOptions($userId, 'preferences');
+    $UserRequiredList = $this->matchesmodel->GetUserMatchOptions($userId, 'requirements'); // technically also preferences
 
 		// Score = W1*DemographicScore+W2*PreferedInterestScore+W3*MatchingInterestScore+W4*SimilarInterestScore+W5*ActivityScore+...
 		$score = 0;

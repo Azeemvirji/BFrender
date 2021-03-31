@@ -80,6 +80,18 @@
                                             </p>
                                           </div>
                                         </div>
+                                        <div class="row">
+                                          <div class="col-md-2">
+                                            <label>Location</label>
+                                          </div>
+                                          <div class="col-md-10">
+                                            <? if($user['location'] == ""){ ?>
+                                              <p>Not Provided</p>
+                                            <? }else{ ?>
+                                            <p><?= $user['location']['city'] ?>, <?= $user['location']['province'] ?></p>
+                                          <? } ?>
+                                          </div>
+                                        </div>
                             </div>
                             </div>
                         </div>

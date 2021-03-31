@@ -13,6 +13,8 @@ class Friends extends CI_Controller {
       $this->load->model('users');
       $this->load->model('friendsmodel');
       $this->load->model('location');
+      $this->load->model('tags');
+      $this->load->model('matchesmodel');
 
       date_default_timezone_set('America/Toronto');
      $_SESSION['page'] = 'friends';
@@ -24,7 +26,7 @@ class Friends extends CI_Controller {
     }
 
     public function Debug(){
-        $id = $this->users->GetUsernameFromUserId($this->friendsmodel->RequestSentBy(11));
+        $id = $this->matchesmodel->CheckIfUserDetailsExist(1);
 
         echo $id;
     }
@@ -39,6 +41,7 @@ class Friends extends CI_Controller {
     protected function formatFriendsArray($friends){
       $newArray = [];
       $userId = $this->users->GetUserID($_SESSION['username']);
+      $userInterests = $this->GetInterestsForUser($userId);
       foreach($friends as $friends){
         $formatted = [];
 
@@ -61,17 +64,41 @@ class Friends extends CI_Controller {
         $friendsId = $this->friendsmodel->GetFriendsId($userId, $friends['userId']);
         $formatted['sentBy'] = $this->users->GetUsernameFromUserId($this->friendsmodel->RequestSentBy($friendsId));
 
-        $formatted['InterestCount'] = 3;
-
-		    #$formatted['CommonInterest'] = 'Test' #May try to turn this into an array.
+        $commonInterest = $this->GetCommonInterests($userInterests, $friends['userId']);
+		    $formatted['CommonInterest'] = $commonInterest;
+        $formatted['InterestCount'] = count($commonInterest);
 
 
   		  #Suggested Activity
-  		  $formatted['ActivitySuggestion'] = 'Hiking'; #todo: make algorithm
+  		  $formatted['ActivitySuggestion'] = ''; #todo: make algorithm
 
         array_push($newArray, $formatted);
       }
       return $newArray;
+    }
+
+    protected function GetCommonInterests($userInterests, $friendId){
+      $friendsInterests = $this->GetInterestsForUser($friendId);
+      $common = [];
+
+      foreach ($userInterests as $interest) {
+        if(in_array($interest, $friendsInterests)){
+          array_push($common, $interest);
+        }
+      }
+
+      return $common;
+    }
+
+    protected function GetInterestsForUser($userId) {
+      $tagsId = $this->tags->GetUserTags($userId, "InterestRelational");
+      $tags = [];
+
+      foreach ($tagsId as $row) {
+        array_push($tags, $this->tags->GetTagName($row['tagId']));
+      }
+
+      return $tags;
     }
 
     protected function getUserInfo(){

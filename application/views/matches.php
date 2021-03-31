@@ -44,7 +44,6 @@
         <input type="submit" value="Match Options" id="matchesBtn"/>
 	</div>
 	</div>
-
 	<!-- Matches -->
 	<? foreach($matches as $match){ ?>
     <div class="row">
@@ -64,15 +63,20 @@
 
                       <div class="col-sm-6 col-xs-6">
                         <p><?= $match['age'] ?> yrs</p>
-                        <p>North York</p>
-                        <p>Toronto</p>
+                        <p><?= $match['city'] ?></p>
 						<p>Rank: <?= $match['rank'] ?>, Score: <?= $match['score'] ?></p>
                       </div>
                        <div class="col-sm-6 col-xs-6">
-                          <h5>7 Common Interest Including:</h5>
-                          <p><span>Craft Beers</span><span> Hockey </span><span> Camping </span></p>
+                         <? if ($match['InterestCount'] > 0){ ?>
+                          <h5><?= $match['InterestCount'] ?> Common Interest Including:</h5>
+                          <p><? foreach ($match['CommonInterest'] as $value) { ?>
+                            <span><?= $value ?></span>
+                          <? } ?></p>
+                          <? } ?>
+                          <? if($match['ActivitySuggestion'] != ""){ ?>
                           <h5>Suggested Activity:</h5>
-                          <p>Hiking</p>
+                          <p><?= $match['ActivitySuggestion'] ?></p>
+                          <? } ?>
                       </div>
               </div>
             </div>

@@ -38,7 +38,7 @@ class Userauth  {
       {
         $this->redirect($_SESSION['basepage']);
       }
-
+      $this->updateLastLogin($username);
       // First time users don't get an error message....
       if ($_SERVER['REQUEST_METHOD'] == 'GET') return;
 
@@ -109,7 +109,9 @@ class Userauth  {
         $this->redirect($this->login_page);
       }
 
-	  $accesslevel = $_SESSION['accesslevel'];
+    $this->updateLastActive($_SESSION['username']);
+
+    $accesslevel = $_SESSION['accesslevel'];
 	  if($accesslevel == ""){
 		  $accesslevel = 'public';
 	  }
@@ -204,10 +206,10 @@ class Userauth  {
 	  foreach($listing as $row){
 		  {
         //$this->test = $row['uname'];
-			if($this->password == $row['password']){
+			if(password_verify($this->password, $row['password'])){
 				$this->frozen = $row['frozen'];
 				$this->accesslevel = $row['accessLevel'];
-        $this->updateLastLogin($row['uname'], $row['userId']);
+
 				return true;
 			}
 		  }
@@ -216,14 +218,20 @@ class Userauth  {
 
     }
 
-    public function updateLastLogin($username, $userId){
+    public function updateLastLogin($username){
       $CI =& get_instance();
       date_default_timezone_set('America/Toronto');
-      $data = array(
-        'lastLogin' => date("Y-m-d h:i:sa")
-      );
+      $CI->db->set('lastLogin', date("Y-m-d h:i:sa"));
       $CI->db->where('username', $username);
-      $CI->db->update('users', $data);
+      $CI->db->update('users');
+    }
+
+    public function updateLastActive($username){
+      $CI =& get_instance();
+      date_default_timezone_set('America/Toronto');
+      $CI->db->set('lastActive', date("Y-m-d h:i:sa"));
+      $CI->db->where('username', $username);
+      $CI->db->update('users');
     }
 
 
@@ -267,7 +275,7 @@ class Userauth  {
       session_start();
       $CI =& get_instance();
 
-      $CI->db->set('password', $password);
+      $CI->db->set('password', password_hash($password, PASSWORD_DEFAULT));
       $CI->db->where('uname', $username);
       $CI->db->update('users');
 
