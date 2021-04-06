@@ -12,8 +12,10 @@ class Matches extends CI_Controller {
     // Your own constructor code
     $this->load->model('users');
     $this->load->model('matchesmodel');
+    $this->load->model('friendsmodel');
     $this->load->model('location');
     $this->load->model('tags');
+    $this->load->model('category');
 
     date_default_timezone_set('America/Toronto');
     $_SESSION['page'] = 'matches';
@@ -76,7 +78,7 @@ class Matches extends CI_Controller {
       $NextMatch['ActivitySuggestion'] = ''; #todo: make algorithm
 
 			#last active
-			$NextMatch['lastlogin'] = $this->getActiveTime($UserInfoArray['lastlogin']);
+			$NextMatch['lastActive'] = $this->getActiveTime($UserInfoArray['lastActive']);
 
 			array_push($matches, $NextMatch);
 		}
@@ -125,11 +127,14 @@ class Matches extends CI_Controller {
 
 
 		// check if user is recently active
-		$ActiveThreshold = 14; // 2 week cut-off.
-		$LastActiveTime = $this->getActiveTime($TestInfoArray['lastLogin']);
-		//if($LastActiveTime > $ActiveThreshold){return 0;}
+		$ActiveThreshold = 28; // 4 week cut-off.
+		$LastActiveTime = $this->getActiveTime($TestInfoArray['lastActive']);
+		if($LastActiveTime > $ActiveThreshold){return 0;}
+
+
 
 		// check if friend/blocked.
+    if ($this->friendsmodel->CheckIfInFriendsTable($userId, $testId) != "false"){return 0;}
 
 		// check if user has a dealbreaker interest.
     $dealbreakers = $this->matchesmodel->GetUserMatchOptions($userId, 'dealbreaker');
@@ -169,7 +174,13 @@ class Matches extends CI_Controller {
 		$GenderScore = 0;
 		if ($UGen == $TGen) {$GenderScore = 10;} // Max 10
 
-		$DemScore = $AgeScore + $GenderScore; //Max 110
+    $ULoc = $this->location->GetLocationById($this->users->GetUserLocation($userId));
+    $TLoc = $this->location->GetLocationById($this->users->GetUserLocation($testId));
+
+    $CityScore = 0;
+    if ($ULoc == $TLoc) {$CityScore = 100;} // Max 100
+
+		$DemScore = $AgeScore + $GenderScore + $CityScore; //Max 210
 
 		// Prefered Interest Score
     $PrefCount = count($UserPreferedList);
@@ -203,23 +214,36 @@ class Matches extends CI_Controller {
 		// Similar Interest Score
     // This checks for interests that users have which are in the same catagory
     // and while not as valuable as direct matches, they show commonalities.
+    $Catagories = $this->category->GetAllCategory();
 
+    $SIScoreA = 0;
+    foreach($Catagories as $Catagory){
+      $SIUser = 0;
+      $SITest = 0;
+      $TagList = $this->tags->GetTagsForCategory($category);
+      foreach($TagList as $TagL){
+        $TagID = $this->tags->GetTagId($TagL);
+        if (in_array($TagID,$TestInterests) == 1){$SIUser += 1;}
+        if (in_array($TagID,$UserInterests) == 1){$SITest += 1;}
+      }
 
-		$SIScore = 0;
+      $SIScoreA = $SIScoreA + $SIUser*$SITest;
+    }
+
+		$SIScore = sqrt($SIScoreA); // not changing the score for some reason.
 
 		// Activity Score
 
+    $LastActiveTime = $this->getActiveTime($TestInfoArray['lastActive']);
 
-
-
-		$ActScore = 0;
+		$ActScore = 100-5*$LastActiveTime; //max 100, can be negative.
 
 
 		// Total
 		$W1 = 1;
 		$W2 = 1;
 		$W3 = 25; // Higher to offset lower value
-		$W4 = 1;
+		$W4 = 5;
 		$W5 = 1;
 
 		$score = $W1*$DemScore + $W2*$PIScore + $W3*$MIScore + $W4*$SIScore + $W5*$ActScore;
