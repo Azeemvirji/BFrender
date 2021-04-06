@@ -178,9 +178,9 @@ class Matches extends CI_Controller {
     $TLoc = $this->location->GetLocationById($this->users->GetUserLocation($testId));
 
     $CityScore = 0;
-    if ($ULoc == $TLoc) {$CityScore = 100;} // Max 100
+    if ($ULoc == $TLoc) {$CityScore = 30;} // Max 30
 
-		$DemScore = $AgeScore + $GenderScore + $CityScore; //Max 210
+		$DemScore = $AgeScore + $GenderScore + $CityScore; //Max 140
 
 		// Prefered Interest Score
     $PrefCount = count($UserPreferedList);
