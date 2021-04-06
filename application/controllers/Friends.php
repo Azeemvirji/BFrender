@@ -70,7 +70,7 @@ class Friends extends CI_Controller {
 
 
   		  #Suggested Activity
-  		  $formatted['ActivitySuggestion'] = ''; #todo: make algorithm
+  		  $formatted['ActivitySuggestion'] = $this->getActivity($commonInterest); #todo: make algorithm
 
         array_push($newArray, $formatted);
       }
@@ -149,6 +149,34 @@ class Friends extends CI_Controller {
       return $age;
     }
 
+    // function to provide a suggested activity
+    protected function getActivity($commonInterest){
+
+      $Suggestion = '';
+
+      // determine which catagory has the most common interests
+      foreach ($commonInterest as $CI){
+
+
+
+      }
+
+      // based on the catagory with the most in common, returns an activity.
+      // Activities should be stored in the database, but for now, here they are:
+      // Watch/Stream A Movie, Wine Tasting, Yoga Class, Try an escape room,
+      // volunteer at a charity, go shopping together, go hiking,visit a car show, and grab a coffee.
+
+
+
+
+
+
+
+
+      $Suggestion = 'Grab a Coffee';
+
+      return $Suggestion;
+      }
 }
 
 ?>
