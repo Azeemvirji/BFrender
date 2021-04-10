@@ -69,6 +69,14 @@ class Tags extends CI_Model{
     return $users[0]['tagName'];
   }
 
+  public function GetTagCat($tag){
+    $this->db->where('tagName', $tag);
+    $query = $this->db->get('tags');
+    $users = $query->result_array();
+
+    return $users[0]['categoryId'];
+  }
+
 // function to add weights for the user to the tag
   public function AddWeightForTag($userId, $tagId, $type)
   {

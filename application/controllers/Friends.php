@@ -154,27 +154,48 @@ class Friends extends CI_Controller {
 
       $Suggestion = '';
 
+      $CatIDcount = array_fill(0, 20, 0);
       // determine which catagory has the most common interests
       foreach ($commonInterest as $CI){
-
-
-
+        $catID = $this->tags->GetTagCat($CI);
+        $CatIDcount[$catID] = $CatIDcount[$catID] + 1;
       }
 
       // based on the catagory with the most in common, returns an activity.
       // Activities should be stored in the database, but for now, here they are:
       // Watch/Stream A Movie, Wine Tasting, Yoga Class, Try an escape room,
       // volunteer at a charity, go shopping together, go hiking,visit a car show, and grab a coffee.
+      $maxs = array_keys($CatIDcount, max($CatIDcount));
+      $maxCat = $maxs[0];
 
-
-
-
-
-
-
-
-      $Suggestion = 'Grab a Coffee';
-
+      switch ($maxCat) {
+        case 9:
+            $Suggestion = 'Go on a hike together';
+            break;
+        case 10:
+            $Suggestion = 'Try an escape room together';
+            break;
+        case 13:
+            $Suggestion = 'Volunteer at a charity';
+            break;
+        case 14:
+            $Suggestion = 'Try a fitness class';
+            break;
+        case 15:
+            $Suggestion = 'Visit a spa';
+            break;
+        case 16:
+            $Suggestion = 'Stream a movie';
+            break;
+        case 17:
+            $Suggestion = 'Try an exotic cooking class';
+            break;
+        case 18:
+            $Suggestion = 'Visit a car show';
+            break;
+        default:
+           $Suggestion = 'Grab a Coffee';
+       }
       return $Suggestion;
       }
 }
