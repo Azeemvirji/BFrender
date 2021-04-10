@@ -75,7 +75,7 @@ class Matches extends CI_Controller {
       $NextMatch['CommonInterest'] = $commonInterest;
       $NextMatch['InterestCount'] = count($commonInterest);
 
-      $NextMatch['ActivitySuggestion'] = ''; #todo: make algorithm
+      $NextMatch['ActivitySuggestion'] = '';
 
 			#last active
 			$NextMatch['lastActive'] = $this->getActiveTime($UserInfoArray['lastActive']);
