@@ -64,7 +64,7 @@
                       <div class="col-sm-6 col-xs-6">
                         <p><?= $match['age'] ?> yrs</p>
                         <p><?= $match['city'] ?></p>
-						<p>Rank: <?= $match['rank'] ?>, Score: <?= $match['score'] ?></p>
+						<p>Rank: <?= $match['rank'] ?></p>
                       </div>
                        <div class="col-sm-6 col-xs-6">
                          <? if ($match['InterestCount'] > 0){ ?>
