@@ -206,7 +206,7 @@ class Matches extends CI_Controller {
 
     $IdealInterestCount = 20; // To prevent someone spamming interests for matches
     if ($AvIntCount > $IdealInterestCount){
-        $MICount = $MICount * (1 - $IdealInterestCount/$AvIntCount);
+        $MICount = $MICount * ($IdealInterestCount/$AvIntCount);
     }
 
 		$MIScore = $MICount;
