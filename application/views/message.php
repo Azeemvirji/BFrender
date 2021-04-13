@@ -1,6 +1,30 @@
+<div class="col-md-3 chat_sidebar" style="float:left">
+  <div class="row">
+    <div class="dropdown all_conversation">
+               <button style="width:155px"><h5>Conversations</h5></button>
+            </div>
+            <br/>
+            <? foreach($friends as $friend){ ?>
+              <span class="chat-img pull-left">
+                     <img src="<?= assetUrl(); ?>img/users/<?= $friend['imageLocation'] ?>" alt="User Avatar" class="img-circle">
+                     </span>
+                     <div class="chat-body clearfix">
+                        <div class="header_sec">
+                           <a href="" id="<?= $friend['username'] ?>" onclick="return changeFriend(this.id)">&nbsp;&nbsp;<?= $friend['username'] ?></a>
+                        </div>
+                      </div>
+            <? } ?>
+  </div>
+  </div>
+
+<div class="row">
 <div class="chat_window">
   <div class="top_menu">
-      <div class="title">Chatting with <?= $chatUname ?></div>
+      <? if($chatUname != ""){ ?>
+        <div class="title" id="title">Chatting with <?= $chatUname ?></div>
+      <? }else{ ?>
+        <div class="title" id="title"></div>
+      <? } ?>
   </div>
   <ul class="messages" id="messages">
   </ul>
@@ -14,6 +38,8 @@
       </div>
   </div>
 </div>
+</div>
+
 
 <script>
 
@@ -29,6 +55,14 @@ input.addEventListener("keyup", function(event){
 		$('#sendButton').click();
 	}
 });
+
+function changeFriend(friend){
+  activeFriend = friend;
+  $("#title").html("Chatting with " + friend);
+  getAllMessages();
+
+  return false;
+}
 
 function getAllMessages(){
    var url = "<?= base_url() ?>index.php?/Message/GetAllMessages";

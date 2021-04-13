@@ -9,7 +9,6 @@
  <th>Delete</th>
  <th>Freeze</th>
  <th>Username</th>
- <th>Password</th>
  <th>Access level</th>
  <th>Frozen</th>
  </tr>
@@ -22,7 +21,6 @@
  <td><a href="<?= base_url() ?>index.php?/Admin/freeze/<?= $row['userId'] ?>">F</a></td>
 <? } ?>
  <td><?= $row['username'] ?></td>
- <td><?= $row['password'] ?></td>
  <td><?= $row['accessLevel'] ?></td>
  <td><?= $row['frozen'] ?></td>
  </tr>

@@ -206,12 +206,15 @@ class Userauth  {
 	  foreach($listing as $row){
 		  {
         //$this->test = $row['uname'];
-			if(password_verify($this->password, $row['password'])){
-				$this->frozen = $row['frozen'];
-				$this->accesslevel = $row['accessLevel'];
+        if ($this->username ==  $row['username'])
+  		  {
+  			if(password_verify($this->password, $row['password'])){
+  				$this->frozen = $row['frozen'];
+  				$this->accesslevel = $row['accessLevel'];
 
-				return true;
-			}
+  				return true;
+  			}
+        }
 		  }
 	  }
       return false;
@@ -276,7 +279,7 @@ class Userauth  {
       $CI =& get_instance();
 
       $CI->db->set('password', password_hash($password, PASSWORD_DEFAULT));
-      $CI->db->where('uname', $username);
+      $CI->db->where('username', $username);
       $CI->db->update('users');
 
       return $this->login($username, $password);

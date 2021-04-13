@@ -109,10 +109,11 @@ class Profile extends CI_Controller {
   used to see the output of variables, perticularly the models
   */
   public function Debug(){
-    $userId = $this->users->GetUserID($_SESSION['username']);
-    $test = $this->users->UpdateBioAndLocation($_SESSION['username'], "", 0);
+    $tags = $this->tags->GetTagsForCategory("All");
 
-    echo $test;
+    foreach($tags as $tag){
+      echo "<a href=\"\" id=\"" . $tag['tagName'] . "\" onclick=\"return addInterest(this.id)\">" . $tag['tagName'] . "</a><br/>";
+    }
   }
 
   /*

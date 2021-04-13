@@ -18,6 +18,10 @@ class Edit extends CI_Controller {
 
   public function index()
   {
+      $this->display();
+  }
+
+  protected function display(){
     $this->currentUser = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     $this->TPL['user'] = $this->currentUser;
     $this->TPL['user']['bio'] = trim($this->users->GetUserBio($this->currentUser['userId']));
@@ -98,7 +102,7 @@ class Edit extends CI_Controller {
     if($this->form_validation->run() == false){
 
       $this->setActive('password');
-      $this->template->show('edit', $this->TPL);
+      $this->display();
     }else{
       $this->TPL['msg'] = $this->userauth->changePassword($_SESSION['username'], $this->input->post("newPassword"));
       header("Location: ". base_url() . "index.php/Profile");
@@ -108,11 +112,11 @@ class Edit extends CI_Controller {
   protected function formValidation(){
     $this->currentUser = $this->users->GetUserInfoFromUsername($_SESSION['username']);
     $this->load->library('form_validation');
-    $this->form_validation->set_rules('currentPassword', 'Current Password', 'required|callback_is_current_password');
+    $this->form_validation->set_rules('current', 'Current Password', 'callback_is_current_password');
     $this->form_validation->set_rules('newPassword', 'New Password', 'required|min_length[8]|callback_is_password_strong');
     $this->form_validation->set_rules('verify', 'Confirm Password', 'required|matches[newPassword]');
   }
-  protected function is_password_strong($password)
+  public function is_password_strong($password)
   {
      if (preg_match('#[0-9]#', $password) && preg_match('#[A-Z]#', $password)) {
      return TRUE;
@@ -120,11 +124,13 @@ class Edit extends CI_Controller {
      $this->form_validation->set_message('is_password_strong', 'Please make sure password has atleast one number and one captial letter');
      return FALSE;
   }
-  protected function is_current_password($password){
-    if($password == $this->currentUser['password']){
+  public function is_current_password($password){
+    //password_verify($password, $this->currentUser['password'])
+    if(password_verify($password, $this->currentUser['password'])){
       return TRUE;
     }
     $this->form_validation->set_message('is_current_password', 'Please make sure you enter your current password');
+    return FALSE;
   }
 
   protected function setActive($item){

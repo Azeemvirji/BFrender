@@ -17,7 +17,7 @@ class Message extends CI_Controller {
   }
 
   public function index(){
-    //$this->display();
+    $this->display("");
   }
 
   public function chat($uname){
@@ -26,10 +26,26 @@ class Message extends CI_Controller {
 
   protected function display($uname){
     $this->TPL['chatUname'] = $uname;
-    $this->TPL['conversation'] = $this->GetConversation($uname);
-    $this->TPL['pics'] = $this->GetImageLocation($uname);
+    if($uname != ""){
+      $this->TPL['conversation'] = $this->GetConversation($uname);
+      $this->TPL['pics'] = $this->GetImageLocation($uname);
+    }
+    $this->TPL['friends'] = $this->formatFriendsArray($this->friendsmodel->GetFriendsForUser($this->users->GetUserID($_SESSION['username']), "all"));
 
     $this->template->show('message', $this->TPL);
+  }
+
+  protected function formatFriendsArray($friends){
+    $newArray = [];
+    foreach($friends as $friends){
+      $formatted = [];
+
+      $formatted['username'] = $friends['username'];
+      $formatted['imageLocation'] = $friends['imageLocation'];
+
+      array_push($newArray, $formatted);
+    }
+    return $newArray;
   }
 
   protected function GetImageLocation($uname){

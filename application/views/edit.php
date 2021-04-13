@@ -55,10 +55,11 @@
                               </select>
                           </div>
                       </div>
+
                       <div class="form-group">
                         <div class="col-xs-12">
                             <label for="bio"><h4>Bio</h4></label><br/>
-                            <textarea id="bio" name="bio" rows="4" cols="110"><?= $user['bio'] ?></textarea>
+                            <textarea id="bio" name="bio" rows="4" cols="115"><?= $user['bio'] ?></textarea>
                         </div>
                       </div>
                       <div class="form-group">
@@ -103,8 +104,9 @@
 
                           <div class="col-xs-12">
                               <label for="password"><h4> Current Password</h4></label>
-                              <input type="password" class="form-control" style="color:black;" name="currentPassword" id="currentPassword" placeholder="password" title="enter your password.">
-                              <?= form_error('currentPassword', '<div class="error">', '</div>'); ?>
+                              <input type="password" class="form-control" style="color:black;" required name="current" id="current" placeholder="password" title="enter your password.">
+                              <?= form_error('current', '<div class="error">', '</div>'); ?>
+
                           </div>
                       </div>
 
@@ -112,7 +114,7 @@
 
                           <div class="col-xs-12">
                               <label for="password"><h4>New Password</h4></label>
-                              <input type="password" class="form-control" style="color:black;" name="newPassword" id="newPassword" placeholder="password" title="enter your new password">
+                              <input type="password" class="form-control" style="color:black;" required name="newPassword" id="newPassword" placeholder="password" title="enter your new password">
                                <?= form_error('newPassword', '<div class="error">', '</div>'); ?>
                           </div>
                       </div>
@@ -120,7 +122,7 @@
 
                           <div class="col-xs-12">
                             <label for="verify"><h4>Verify Password</h4></label>
-                              <input type="password" class="form-control" style="color:black;" name="verify" id="verify" placeholder="Verify Password" title="enter your new password again">
+                              <input type="password" class="form-control" style="color:black;" required name="verify" id="verify" placeholder="Verify Password" title="enter your new password again">
                                <?= form_error('verify', '<div class="error">', '</div>'); ?>
                           </div>
                       </div>

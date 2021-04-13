@@ -70,11 +70,11 @@ class Friendsmodel extends CI_Model{
 
     foreach($relationships as $relation){
       if($relation['userId'] == $userId){
-        if($relation['status'] == $status){
+        if($relation['status'] == $status or $status == "all"){
           array_push($friends, $this->users->GetUserInfoFromUserId($relation['friendId']));
         }
       }else if($relation['friendId'] == $userId){
-        if($relation['status'] == $status){
+        if($relation['status'] == $status or $status == "all"){
           array_push($friends, $this->users->GetUserInfoFromUserId($relation['userId']));
         }
       }

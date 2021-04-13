@@ -34,14 +34,13 @@
  }
 </style>
 <div class="container">
-	<form method="post" action="<?= base_url(); ?>index.php?/MatchOptions">
 	<!-- Match option button -->
 	<div class="row">
 	<div class="col-md-6" id="matchesHeader">
        <h3>Top Friend Matches</h3>
     </div>
 	<div class="col-md-6">
-        <input type="submit" value="Match Options" id="matchesBtn"/>
+        <a href="<?= base_url(); ?>index.php?/MatchOptions"><input type="submit" value="Match Options" id="matchesBtn"/></a>
 	</div>
 	</div>
 	<!-- Matches -->
@@ -91,6 +90,5 @@
       </div>
     </div><!--profile-head close-->
   </div><!--row-close-->
-  </form>
 <? } ?>
 </div>

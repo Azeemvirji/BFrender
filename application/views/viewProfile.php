@@ -10,11 +10,7 @@
                     <div class="col-md-6">
                         <div class="profile-head">
                                     <h5 style="font-weight:600;color:#0062cc;">
-                                        <? if($user['firstname'] != "" && $user['lastname'] !=""){ ?>
                                         <?= $user['firstname'] ?> <?= $user['lastname'] ?>
-                                      <? }else{ ?>
-                                        <p>Please add some info about yourself using the edit profile -></p>
-                                      <? } ?>
                                     </h5>
                         </div>
                     </div>

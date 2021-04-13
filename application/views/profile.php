@@ -1,6 +1,5 @@
 <div class="container emp-profile">
             <center id="msg"><?= $msg ?></center>
-            <form method="post" action="<?= base_url(); ?>index.php?/Edit">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="profile-img">
@@ -20,7 +19,7 @@
                     </div>
 
                     <div class="col-md-2">
-                        <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile"/>
+                        <a href="<?= base_url(); ?>index.php?/Edit""><input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile"/></a>
                     </div>
 
                     <div class="col-md-8">
@@ -120,7 +119,6 @@
                   </div>
                     </div>
                 </div>
-            </form>
         </div>
 <script>
   /*
